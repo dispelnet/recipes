@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/ospf-neighbors.json",
+  "title": "ospf-neighbors",
+  "description": "OSPF adjacencies the device reports, one row per neighbour. As with BGP, the identity is the neighbour's router-id rather than the address the adjacency runs over.",
+  "type": "object",
+  "required": ["identity", "address"],
+  "additionalProperties": false,
+  "properties": {
+    "identity": {
+      "type": "string",
+      "x-dispelnet-type": "router-id",
+      "description": "The neighbour's router-id."
+    },
+    "address": {
+      "type": "string",
+      "x-dispelnet-type": "ip",
+      "description": "The neighbour's address on the shared link."
+    },
+    "port": {
+      "type": "string",
+      "x-dispelnet-type": "interface",
+      "description": "The reporting device's own interface the adjacency runs over."
+    },
+    "state": {
+      "type": "string",
+      "x-dispelnet-type": "state",
+      "description": "Adjacency state, such as full or 2-way."
+    }
+  }
+}

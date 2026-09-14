@@ -1,0 +1,16 @@
+# Read from `Device name:` in `show version`, which the probe already ran,
+# rather than a second command.
+
+family:   cisco_nxos
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^\s*Device name:\s+${NAME} -> Record
+    fields:
+      hostname: NAME

@@ -1,0 +1,13 @@
+family:   juniper_junos
+question: router-id
+applies:  ["*"]
+
+steps:
+  - run: show route summary
+    template: |
+      Value ROUTER_ID (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^Router ID:\s+${ROUTER_ID} -> Record
+    fields:
+      identity: ROUTER_ID

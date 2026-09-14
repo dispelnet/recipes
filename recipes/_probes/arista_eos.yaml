@@ -1,0 +1,9 @@
+id:        arista_eos
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {field: 1, equals: Arista}
+
+family:  arista_eos

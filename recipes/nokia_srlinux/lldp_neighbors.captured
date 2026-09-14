@@ -1,0 +1,31 @@
+{
+  "system": {
+    "lldp": {
+      "interface": [
+        {
+          "name": "ethernet-1/4",
+          "neighbor": [
+            {
+              "id": "1A:69:0A:FF:00:00",
+              "first-message": "2026-08-29T18:32:44.417Z (3 hours ago)",
+              "last-update": "2026-08-29T21:44:51.764Z (8 seconds ago)",
+              "system-name": "spine2",
+              "system-description": "SRLinux-v24.10.1-492-gf8858c5836 spine2 7.0.0-30-generic #30~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:27:52 UTC 2",
+              "chassis-id": "1A:69:0A:FF:00:00",
+              "chassis-id-type": "MAC_ADDRESS",
+              "port-id": "ethernet-1/4",
+              "port-id-type": "INTERFACE_NAME",
+              "port-description": "to spine1",
+              "capability": [
+                {
+                  "name": "ROUTER",
+                  "enabled": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

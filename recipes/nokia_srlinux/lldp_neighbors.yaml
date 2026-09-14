@@ -1,0 +1,16 @@
+family:   nokia_srlinux
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - id: interfaces
+    run: info from state /system lldp interface * neighbor * | as json
+    select: system.lldp.interface[*]
+    fields:
+      port: name
+
+  - from: interfaces
+    select: neighbor[*]
+    fields:
+      identity: system-name
+      address: management-address[*].address

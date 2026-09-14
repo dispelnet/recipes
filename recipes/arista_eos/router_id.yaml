@@ -1,0 +1,16 @@
+# Older EOS prints "BGP router identifier", newer "Router identifier". A device
+# without one reports 0.0.0.0, which the pattern excludes.
+
+family:   arista_eos
+question: router-id
+applies:  ["*"]
+
+steps:
+  - run: show ip bgp summary
+    template: |
+      Value ROUTER_ID ([1-9]\d*\.\d+\.\d+\.\d+)
+
+      Start
+        ^(BGP\s+)?[Rr]outer\s+identifier\s+${ROUTER_ID}, -> Record
+    fields:
+      identity: ROUTER_ID

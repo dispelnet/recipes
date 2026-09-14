@@ -1,0 +1,13 @@
+family:   cisco_xr
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^Cisco IOS XR Software, Version\s+${VERSION} -> Record
+    fields:
+      version: VERSION

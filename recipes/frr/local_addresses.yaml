@@ -1,0 +1,15 @@
+family:   frr
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - id: interfaces
+    run: ip -j addr
+    select: "[*]"
+    fields:
+      port: ifname
+
+  - from: interfaces
+    select: addr_info[*]
+    fields:
+      identity: local

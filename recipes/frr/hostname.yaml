@@ -1,0 +1,13 @@
+family:   frr
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: hostname
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^${NAME} -> Record
+    fields:
+      hostname: NAME

@@ -1,0 +1,16 @@
+# IOS has no `show hostname`; the name is on the ` uptime is` line of
+# `show version`.
+
+family:   cisco_ios
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^${NAME}\s+uptime\s+is\s -> Record
+    fields:
+      hostname: NAME

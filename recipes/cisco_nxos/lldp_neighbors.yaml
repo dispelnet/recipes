@@ -1,0 +1,25 @@
+# A name longer than its column wraps onto its own line, so it is remembered and
+# the next line completes the row. The port is `Required` so that the remembered
+# name is not recorded again, without a port, at the end of the input.
+
+family:   cisco_nxos
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      Value Filldown NEIGHBOR (\S+)
+      Value LOCAL_PORT (\S+)
+      Value Required NEIGHBOR_PORT (\S+)
+
+      Start
+        ^Device ID\s+Local Intf -> Table
+
+      Table
+        ^${NEIGHBOR}\s+${LOCAL_PORT}\s+\d+\s+\S*\s+${NEIGHBOR_PORT}\s*$$ -> Record
+        ^${NEIGHBOR}\s*$$
+        ^\s+${LOCAL_PORT}\s+\d+\s+\S*\s+${NEIGHBOR_PORT}\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT

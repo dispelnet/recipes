@@ -1,0 +1,9 @@
+id:        cisco_xr
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {contains: "Cisco IOS XR"}
+
+family:  cisco_xr

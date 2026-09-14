@@ -1,0 +1,22 @@
+# `vrf all-inclusive` covers the default VRF and every other; `vrf all` leaves
+# the default out. With fast hellos the dead time reads "NNN msec".
+
+family:   cisco_xr
+question: ospf-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show ospf vrf all-inclusive neighbor
+    template: |
+      Value NEIGHBOR_ID (\d+\.\d+\.\d+\.\d+)
+      Value STATE (\w+)
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value INTERFACE (\S+)
+
+      Start
+        ^\s*${NEIGHBOR_ID}\s+\d+\s+${STATE}/\s*\S+\s+\S+(\s+msec)?\s+${ADDRESS}\s+${INTERFACE}\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR_ID
+      address:  ADDRESS
+      state:    {from: STATE, lower: true}
+      port:     INTERFACE

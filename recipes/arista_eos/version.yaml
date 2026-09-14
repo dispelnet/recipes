@@ -1,0 +1,13 @@
+family:   arista_eos
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^Software image version:\s+${VERSION} -> Record
+    fields:
+      version: VERSION

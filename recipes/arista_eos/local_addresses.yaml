@@ -1,0 +1,14 @@
+family:   arista_eos
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - run: show ip interface brief
+    template: |
+      Value INTERFACE (\S+)
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^${INTERFACE}\s+${ADDRESS}/\d+\s+ -> Record
+    fields:
+      identity: ADDRESS

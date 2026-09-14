@@ -1,0 +1,12 @@
+family:   frr
+question: addresses
+applies:  ["*"]
+
+steps:
+  - run: ip -j neigh
+    select: "[*]"
+    fields:
+      address: dst
+      mac:     lladdr
+      state:   {from: "state[*]", lower: true}
+      port:    dev

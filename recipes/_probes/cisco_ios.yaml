@@ -1,0 +1,9 @@
+id:        cisco_ios
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {contains: "Cisco IOS Software"}
+
+family:  cisco_ios

@@ -1,0 +1,9 @@
+family:   frr
+question: router-id
+applies:  ["*"]
+
+steps:
+  - run: vtysh -c "show bgp summary json"
+    select: ipv4Unicast
+    fields:
+      identity: routerId

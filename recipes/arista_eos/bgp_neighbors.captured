@@ -1,0 +1,503 @@
+BGP neighbor is 10.0.0.21, remote AS 64520, internal link
+  BGP version 4, remote router ID 10.0.0.21, VRF default
+  Inherits configuration from and member of peer-group RR
+  Last read 00:00:35, last write 00:00:28
+  Hold time is 180, keepalive interval is 60 seconds
+  Configured hold time is 180, keepalive interval is 60 seconds
+  Hold timer is active, time left: 00:00:09
+  Keepalive timer is active, time left: 00:00:29
+  Connect timer is inactive
+  Idle-restart timer is inactive
+  BGP state is Established, up for 27d04h
+  Number of transitions to established: 1
+  Last state was OpenConfirm
+  Last event was RecvUpdate
+  Last sent socket-error:Connect (Network is unreachable), Last time 27d04h
+  Neighbor Capabilities:
+    Multiprotocol L2VPN EVPN: advertised and received and negotiated
+    Four Octet ASN: advertised and received and negotiated
+    Route Refresh: advertised and received and negotiated
+    Send End-of-RIB messages: advertised and received and negotiated
+    Additional-paths recv capability:
+      L2VPN EVPN: advertised
+    Additional-paths send capability:
+      L2VPN EVPN: received
+  Restart timer is inactive
+  End of rib timer is inactive
+    L2VPN EVPN End-of-RIB received: Yes
+  Message Statistics:
+                         Sent      Rcvd
+    Opens:                  1         1
+    Notifications:          0         0
+    Updates:             6032     25292
+    Keepalives:         43031     42826
+    Route Refresh:          0         0
+    Total messages:     49064     68119
+  Prefix Statistics:
+                                   Sent      Rcvd
+    IPv4 Unicast:                     0         0
+    IPv6 Unicast:                     0         0
+    EVPN:                            10        42
+  Configured maximum total number of routes is 12000
+  Inbound updates dropped by reason:
+    AS path loop detection: 0
+    Enforced First AS: 0
+    Malformed MPBGP routes: 0
+    Originator ID matches local router ID: 0
+    Nexthop matches local IP address: 0
+    Unexpected IPv6 nexthop for IPv4 routes: 0
+  Inbound updates with attribute errors:
+    Resulting in removal of all paths in update (treat as withdraw): 0
+    Resulting in AFI/SAFI disable: 0
+    Resulting in attribute ignore: 0
+    Disabled AFI/SAFIs: None
+  Inbound paths dropped by reason:
+    IPv4 labeled-unicast NLRIs dropped due to excessive labels: 0
+    IPv6 labeled-unicast NLRIs dropped due to excessive labels: 0
+  Outbound paths dropped by reason:
+    IPv4 local address not available: 0
+    IPv6 local address not available: 0
+Local AS is 64520, local router ID 10.0.0.32
+TTL is 255
+Local TCP address is 10.0.0.32, local port is 179
+Remote TCP address is 10.0.0.21, remote port is 48002
+TCP Socket Information:
+  TCP state is ESTABLISHED
+  Recv-Q: 0/32768
+  Send-Q: 0/32768
+  Outgoing Maximum Segment Size (MSS): 1448
+  Total Number of TCP retransmissions: 2
+  Options:
+    Timestamps enabled: yes
+    Selective Acknowledgments enabled: yes
+    Window Scale enabled: yes
+    Explicit Congestion Notification (ECN) enabled: no
+  Socket Statistics:
+    Window Scale (wscale): 7,7
+    Retransmission Timeout (rto): 220.0ms
+    Round-trip Time (rtt/rtvar): 16.9ms/14.8ms
+    Delayed Ack Timeout (ato): 40.0ms
+    Congestion Window (cwnd): 2
+    TCP Throughput: 1.37 Mbps
+    Recv Round-trip Time (rcv_rtt): 25.5ms
+    Advertised Recv Window (rcv_space): 28960
+
+BGP neighbor is 10.0.0.22, remote AS 64520, internal link
+  BGP version 4, remote router ID 10.0.0.22, VRF default
+  Inherits configuration from and member of peer-group RR
+  Last read 00:00:36, last write 00:00:26
+  Hold time is 180, keepalive interval is 60 seconds
+  Configured hold time is 180, keepalive interval is 60 seconds
+  Hold timer is active, time left: 00:02:23
+  Keepalive timer is active, time left: 00:00:16
+  Connect timer is inactive
+  Idle-restart timer is inactive
+  BGP state is Established, up for 27d04h
+  Number of transitions to established: 1
+  Last state was OpenConfirm
+  Last event was RecvUpdate
+  Last sent socket-error:Connect (Network is unreachable), Last time 27d04h
+  Neighbor Capabilities:
+    Multiprotocol L2VPN EVPN: advertised and received and negotiated
+    Four Octet ASN: advertised and received and negotiated
+    Route Refresh: advertised and received and negotiated
+    Send End-of-RIB messages: advertised and received and negotiated
+    Additional-paths recv capability:
+      L2VPN EVPN: advertised
+    Additional-paths send capability:
+      L2VPN EVPN: received
+  Restart timer is inactive
+  End of rib timer is inactive
+    L2VPN EVPN End-of-RIB received: Yes
+  Message Statistics:
+                         Sent      Rcvd
+    Opens:                  1         1
+    Notifications:          0         0
+    Updates:             6032     25292
+    Keepalives:         43068     42851
+    Route Refresh:          0         0
+    Total messages:     49101     68144
+  Prefix Statistics:
+                                   Sent      Rcvd
+    IPv4 Unicast:                     0         0
+    IPv6 Unicast:                     0         0
+    EVPN:                            10        42
+  Configured maximum total number of routes is 12000
+  Inbound updates dropped by reason:
+    AS path loop detection: 0
+    Enforced First AS: 0
+    Malformed MPBGP routes: 0
+    Originator ID matches local router ID: 0
+    Nexthop matches local IP address: 0
+    Unexpected IPv6 nexthop for IPv4 routes: 0
+  Inbound updates with attribute errors:
+    Resulting in removal of all paths in update (treat as withdraw): 0
+    Resulting in AFI/SAFI disable: 0
+    Resulting in attribute ignore: 0
+    Disabled AFI/SAFIs: None
+  Inbound paths dropped by reason:
+    IPv4 labeled-unicast NLRIs dropped due to excessive labels: 0
+    IPv6 labeled-unicast NLRIs dropped due to excessive labels: 0
+  Outbound paths dropped by reason:
+    IPv4 local address not available: 0
+    IPv6 local address not available: 0
+Local AS is 64520, local router ID 10.0.0.32
+TTL is 255
+Local TCP address is 10.0.0.32, local port is 32900
+Remote TCP address is 10.0.0.22, remote port is 179
+TCP Socket Information:
+  TCP state is ESTABLISHED
+  Recv-Q: 0/32768
+  Send-Q: 0/32768
+  Outgoing Maximum Segment Size (MSS): 1448
+  Total Number of TCP retransmissions: 0
+  Options:
+    Timestamps enabled: yes
+    Selective Acknowledgments enabled: yes
+    Window Scale enabled: yes
+    Explicit Congestion Notification (ECN) enabled: no
+  Socket Statistics:
+    Window Scale (wscale): 7,7
+    Retransmission Timeout (rto): 220.0ms
+    Round-trip Time (rtt/rtvar): 16.2ms/13.8ms
+    Delayed Ack Timeout (ato): 40.0ms
+    Congestion Window (cwnd): 10
+    TCP Throughput: 7.17 Mbps
+    Recv Round-trip Time (rcv_rtt): 33.0ms
+    Advertised Recv Window (rcv_space): 29200
+
+BGP neighbor is 169.254.253.2, remote AS 65533, external link
+  BGP version 4, remote router ID 10.0.0.200, VRF default
+  Inherits configuration from and member of peer-group FW
+  Last read 00:00:02, last write 00:00:01
+  Hold time is 9, keepalive interval is 3 seconds
+  Configured hold time is 180, keepalive interval is 60 seconds
+  Hold timer is active, time left: 00:00:06
+  Keepalive timer is active, time left: 00:00:01
+  Connect timer is inactive
+  Idle-restart timer is inactive
+  BGP state is Established, up for 27d04h
+  Number of transitions to established: 1
+  Last state was OpenConfirm
+  Last event was ReapplyInboundPolicy
+  Neighbor Capabilities:
+    Multiprotocol IPv4 Unicast: advertised and received and negotiated
+    Four Octet ASN: advertised and received and negotiated
+    Route Refresh: advertised and received and negotiated
+    Send End-of-RIB messages: advertised and received and negotiated
+    Additional-paths recv capability:
+      IPv4 Unicast: advertised
+    Additional-paths send capability:
+      IPv4 Unicast: received
+  Restart timer is inactive
+  End of rib timer is inactive
+    IPv4 Unicast End-of-RIB received: Yes
+  Message Statistics:
+                         Sent      Rcvd
+    Opens:                  1         1
+    Notifications:          0         0
+    Updates:                1        76
+    Keepalives:        918942    782692
+    Route Refresh:          0         0
+    Total messages:    918944    782769
+  Prefix Statistics:
+                                   Sent      Rcvd
+    IPv4 Unicast:                     0        10
+    IPv6 Unicast:                     0         0
+  Configured maximum total number of routes is 12000
+  Inbound updates dropped by reason:
+    AS path loop detection: 0
+    Enforced First AS: 0
+    Malformed MPBGP routes: 0
+    Originator ID matches local router ID: 0
+    Nexthop matches local IP address: 0
+    Unexpected IPv6 nexthop for IPv4 routes: 0
+  Inbound updates with attribute errors:
+    Resulting in removal of all paths in update (treat as withdraw): 0
+    Resulting in AFI/SAFI disable: 0
+    Resulting in attribute ignore: 0
+    Disabled AFI/SAFIs: None
+  Inbound paths dropped by reason:
+    IPv4 labeled-unicast NLRIs dropped due to excessive labels: 0
+    IPv6 labeled-unicast NLRIs dropped due to excessive labels: 0
+  Outbound paths dropped by reason:
+    IPv4 local address not available: 0
+    IPv6 local address not available: 0
+Local AS is 65520, local router ID 10.0.0.32
+TTL is 1
+Local TCP address is 169.254.253.1, local port is 37869
+Remote TCP address is 169.254.253.2, remote port is 179
+! Sending extended community not configured, updates will be sent without extended communities or route targets
+TCP Socket Information:
+  TCP state is ESTABLISHED
+  Recv-Q: 0/32768
+  Send-Q: 0/32768
+  Outgoing Maximum Segment Size (MSS): 1448
+  Total Number of TCP retransmissions: 0
+  Options:
+    Timestamps enabled: yes
+    Selective Acknowledgments enabled: yes
+    Window Scale enabled: yes
+    Explicit Congestion Notification (ECN) enabled: no
+  Socket Statistics:
+    Window Scale (wscale): 6,7
+    Retransmission Timeout (rto): 208.0ms
+    Round-trip Time (rtt/rtvar): 6.4ms/4.2ms
+    Delayed Ack Timeout (ato): 40.0ms
+    Congestion Window (cwnd): 10
+    TCP Throughput: 18.20 Mbps
+    Recv Round-trip Time (rcv_rtt): 97208.7ms
+    Advertised Recv Window (rcv_space): 29406
+
+
+BGP neighbor is 169.254.253.6, remote AS 65533, external link
+  BGP version 4, remote router ID 10.0.0.200, VRF evpn-vrf
+  Inherits configuration from and member of peer-group FW
+  Last read 00:00:02, last write 00:00:00
+  Hold time is 9, keepalive interval is 3 seconds
+  Configured hold time is 180, keepalive interval is 60 seconds
+  Hold timer is active, time left: 00:00:06
+  Keepalive timer is active, time left: 00:00:01
+  Connect timer is inactive
+  Idle-restart timer is inactive
+  BGP state is Established, up for 27d04h
+  Number of transitions to established: 1
+  Last state was OpenConfirm
+  Last event was ReapplyInboundPolicy
+  Neighbor Capabilities:
+    Multiprotocol IPv4 Unicast: advertised and received and negotiated
+    Four Octet ASN: advertised and received and negotiated
+    Route Refresh: advertised and received and negotiated
+    Send End-of-RIB messages: advertised and received and negotiated
+    Additional-paths recv capability:
+      IPv4 Unicast: advertised
+    Additional-paths send capability:
+      IPv4 Unicast: received
+  Restart timer is inactive
+  End of rib timer is inactive
+    IPv4 Unicast End-of-RIB received: Yes
+  Message Statistics:
+                         Sent      Rcvd
+    Opens:                  1         1
+    Notifications:          0         0
+    Updates:               73        76
+    Keepalives:        918954    782692
+    Route Refresh:          0         0
+    Total messages:    919028    782769
+  Prefix Statistics:
+                                   Sent      Rcvd
+    IPv4 Unicast:                     3         7
+    IPv6 Unicast:                     0         0
+  Configured maximum total number of routes is 12000
+  Inbound updates dropped by reason:
+    AS path loop detection: 71
+    Enforced First AS: 0
+    Malformed MPBGP routes: 0
+    Originator ID matches local router ID: 0
+    Nexthop matches local IP address: 0
+    Unexpected IPv6 nexthop for IPv4 routes: 0
+  Inbound updates with attribute errors:
+    Resulting in removal of all paths in update (treat as withdraw): 0
+    Resulting in AFI/SAFI disable: 0
+    Resulting in attribute ignore: 0
+    Disabled AFI/SAFIs: None
+  Inbound paths dropped by reason:
+    IPv4 labeled-unicast NLRIs dropped due to excessive labels: 0
+    IPv6 labeled-unicast NLRIs dropped due to excessive labels: 0
+  Outbound paths dropped by reason:
+    IPv4 local address not available: 0
+    IPv6 local address not available: 0
+Local AS is 65521, local router ID 169.254.253.5
+TTL is 1
+Local TCP address is 169.254.253.5, local port is 36865
+Remote TCP address is 169.254.253.6, remote port is 179
+! Sending extended community not configured, updates will be sent without extended communities or route targets
+TCP Socket Information:
+  TCP state is ESTABLISHED
+  Recv-Q: 0/32768
+  Send-Q: 0/32768
+  Outgoing Maximum Segment Size (MSS): 1448
+  Total Number of TCP retransmissions: 0
+  Options:
+    Timestamps enabled: yes
+    Selective Acknowledgments enabled: yes
+    Window Scale enabled: yes
+    Explicit Congestion Notification (ECN) enabled: no
+  Socket Statistics:
+    Window Scale (wscale): 6,7
+    Retransmission Timeout (rto): 208.0ms
+    Round-trip Time (rtt/rtvar): 4.3ms/0.9ms
+    Delayed Ack Timeout (ato): 40.0ms
+    Congestion Window (cwnd): 10
+    TCP Throughput: 27.04 Mbps
+    Recv Round-trip Time (rcv_rtt): 97176.7ms
+    Advertised Recv Window (rcv_space): 29406
+
+
+BGP neighbor is 169.254.127.2, remote AS 65534, external link
+  BGP version 4, remote router ID 10.0.0.41, VRF internet-vrf
+  Inherits configuration from and member of peer-group FW
+  Last read 00:00:12, last write 00:00:06
+  Hold time is 90, keepalive interval is 30 seconds
+  Configured hold time is 180, keepalive interval is 60 seconds
+  Hold timer is active, time left: 00:01:17
+  Keepalive timer is active, time left: 00:00:17
+  Connect timer is inactive
+  Idle-restart timer is inactive
+  BGP state is Established, up for 27d04h
+  Number of transitions to established: 1
+  Last state was OpenConfirm
+  Last event was RecvKeepAlive
+  Neighbor Capabilities:
+    Multiprotocol IPv4 Unicast: advertised and received and negotiated
+    Four Octet ASN: advertised and received and negotiated
+    Route Refresh: advertised and received and negotiated
+    Send End-of-RIB messages: advertised and received and negotiated
+    Additional-paths recv capability:
+      IPv4 Unicast: advertised
+    Additional-paths send capability:
+  Restart timer is inactive
+  End of rib timer is inactive
+    IPv4 Unicast End-of-RIB received: Yes
+  Message Statistics:
+                         Sent      Rcvd
+    Opens:                  1         1
+    Notifications:          0         0
+    Updates:               70         3
+    Keepalives:         91899     86617
+    Route Refresh:          0         0
+    Total messages:     91970     86621
+  Prefix Statistics:
+                                   Sent      Rcvd
+    IPv4 Unicast:                     4         6
+    IPv6 Unicast:                     0         0
+  Configured maximum total number of routes is 12000
+  Inbound updates dropped by reason:
+    AS path loop detection: 0
+    Enforced First AS: 0
+    Malformed MPBGP routes: 0
+    Originator ID matches local router ID: 0
+    Nexthop matches local IP address: 0
+    Unexpected IPv6 nexthop for IPv4 routes: 0
+  Inbound updates with attribute errors:
+    Resulting in removal of all paths in update (treat as withdraw): 0
+    Resulting in AFI/SAFI disable: 0
+    Resulting in attribute ignore: 0
+    Disabled AFI/SAFIs: None
+  Inbound paths dropped by reason:
+    IPv4 labeled-unicast NLRIs dropped due to excessive labels: 0
+    IPv6 labeled-unicast NLRIs dropped due to excessive labels: 0
+  Outbound paths dropped by reason:
+    IPv4 local address not available: 0
+    IPv6 local address not available: 0
+Local AS is 65522, local router ID 169.254.253.9
+TTL is 1
+Local TCP address is 169.254.127.3, local port is 179
+Remote TCP address is 169.254.127.2, remote port is 51736
+Bfd is enabled and state is Up
+! Sending extended community not configured, updates will be sent without extended communities or route targets
+TCP Socket Information:
+  TCP state is ESTABLISHED
+  Recv-Q: 0/32768
+  Send-Q: 0/32768
+  Outgoing Maximum Segment Size (MSS): 1448
+  Total Number of TCP retransmissions: 383
+  Options:
+    Timestamps enabled: yes
+    Selective Acknowledgments enabled: yes
+    Window Scale enabled: yes
+    Explicit Congestion Notification (ECN) enabled: no
+  Socket Statistics:
+    Window Scale (wscale): 0,7
+    Retransmission Timeout (rto): 384.0ms
+    Round-trip Time (rtt/rtvar): 183.2ms/42.3ms
+    Delayed Ack Timeout (ato): 40.0ms
+    Congestion Window (cwnd): 2
+    Slow-start Threshold (ssthresh): 2
+    TCP Throughput: 0.13 Mbps
+    Recv Round-trip Time (rcv_rtt): 215922.7ms
+    Advertised Recv Window (rcv_space): 29026
+
+BGP neighbor is 169.254.253.10, remote AS 65533, external link
+  BGP version 4, remote router ID 10.0.0.200, VRF internet-vrf
+  Inherits configuration from and member of peer-group FW
+  Last read 00:00:02, last write 00:00:02
+  Hold time is 9, keepalive interval is 3 seconds
+  Configured hold time is 180, keepalive interval is 60 seconds
+  Hold timer is active, time left: 00:00:00
+  Keepalive timer is active, time left: 00:00:00
+  Connect timer is inactive
+  Idle-restart timer is inactive
+  BGP state is Established, up for 27d04h
+  Number of transitions to established: 1
+  Last state was OpenConfirm
+  Last event was ReapplyInboundPolicy
+  Neighbor Capabilities:
+    Multiprotocol IPv4 Unicast: advertised and received and negotiated
+    Four Octet ASN: advertised and received and negotiated
+    Route Refresh: advertised and received and negotiated
+    Send End-of-RIB messages: advertised and received and negotiated
+    Additional-paths recv capability:
+      IPv4 Unicast: advertised
+    Additional-paths send capability:
+      IPv4 Unicast: received
+  Restart timer is inactive
+  End of rib timer is inactive
+    IPv4 Unicast End-of-RIB received: Yes
+  Message Statistics:
+                         Sent      Rcvd
+    Opens:                  1         1
+    Notifications:          0         0
+    Updates:                2        76
+    Keepalives:        918922    782692
+    Route Refresh:          0         0
+    Total messages:    918925    782769
+  Prefix Statistics:
+                                   Sent      Rcvd
+    IPv4 Unicast:                     6         4
+    IPv6 Unicast:                     0         0
+  Configured maximum total number of routes is 12000
+  Inbound updates dropped by reason:
+    AS path loop detection: 3
+    Enforced First AS: 0
+    Malformed MPBGP routes: 0
+    Originator ID matches local router ID: 0
+    Nexthop matches local IP address: 0
+    Unexpected IPv6 nexthop for IPv4 routes: 0
+  Inbound updates with attribute errors:
+    Resulting in removal of all paths in update (treat as withdraw): 0
+    Resulting in AFI/SAFI disable: 0
+    Resulting in attribute ignore: 0
+    Disabled AFI/SAFIs: None
+  Inbound paths dropped by reason:
+    IPv4 labeled-unicast NLRIs dropped due to excessive labels: 0
+    IPv6 labeled-unicast NLRIs dropped due to excessive labels: 0
+  Outbound paths dropped by reason:
+    IPv4 local address not available: 0
+    IPv6 local address not available: 0
+Local AS is 65522, local router ID 169.254.253.9
+TTL is 1
+Local TCP address is 169.254.253.9, local port is 33523
+Remote TCP address is 169.254.253.10, remote port is 179
+! Sending extended community not configured, updates will be sent without extended communities or route targets
+TCP Socket Information:
+  TCP state is ESTABLISHED
+  Recv-Q: 0/32768
+  Send-Q: 0/32768
+  Outgoing Maximum Segment Size (MSS): 1448
+  Total Number of TCP retransmissions: 0
+  Options:
+    Timestamps enabled: yes
+    Selective Acknowledgments enabled: yes
+    Window Scale enabled: yes
+    Explicit Congestion Notification (ECN) enabled: no
+  Socket Statistics:
+    Window Scale (wscale): 6,7
+    Retransmission Timeout (rto): 208.0ms
+    Round-trip Time (rtt/rtvar): 7.1ms/6.2ms
+    Delayed Ack Timeout (ato): 40.0ms
+    Congestion Window (cwnd): 10
+    TCP Throughput: 16.36 Mbps
+    Recv Round-trip Time (rcv_rtt): 97244.7ms
+    Advertised Recv Window (rcv_space): 29406
+

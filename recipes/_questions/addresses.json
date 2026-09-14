@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/addresses.json",
+  "title": "addresses",
+  "description": "Addresses a device has seen other devices at: its ARP and IPv6 neighbour tables. One row per address. These are what a crawl follows to reach the next device.",
+  "type": "object",
+  "required": ["address"],
+  "additionalProperties": false,
+  "properties": {
+    "address": {
+      "type": "string",
+      "x-dispelnet-type": "ip",
+      "description": "The address the neighbour was seen at."
+    },
+    "mac": {
+      "type": "string",
+      "x-dispelnet-type": "mac",
+      "description": "The hardware address the neighbour answered with, if the table reports one."
+    },
+    "port": {
+      "type": "string",
+      "x-dispelnet-type": "interface",
+      "description": "The reporting device's own port the neighbour was seen on."
+    },
+    "state": {
+      "type": "string",
+      "x-dispelnet-type": "state",
+      "description": "The entry's state, such as reachable or stale."
+    }
+  }
+}

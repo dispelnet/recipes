@@ -1,0 +1,160 @@
+# Publishes an immutable release from a pushed v* tag (docs/RELEASES.md).
+#
+# Every step fails closed, and nothing is created on GitHub before Publish.
+# Immutable releases forbid adding assets after publishing, so the draft is
+# filled and checked first.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+# A half-finished release must not be cancelled by a retry.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: write # create the release and upload to it
+      attestations: read # checking dispelnet's build provenance
+
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      # Full history, for the tag-on-main check and the other tags. No persisted
+      # credentials: this job's token can write releases.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Fetched explicitly so the tag keeps its annotation.
+      - name: Fetch the tag and main
+        run: git fetch --force origin "+refs/tags/${TAG}:refs/tags/${TAG}" "+refs/heads/main:refs/remotes/origin/main"
+
+      # docs/VERSIONING.md: strict SemVer with no build metadata, annotated, on
+      # main. Latest goes only to the highest stable version.
+      - name: Check the tag
+        id: tag
+        run: |
+          semver='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$'
+          [[ $TAG =~ $semver ]] || { echo "::error::$TAG is not a SemVer version such as v1.2.3"; exit 1; }
+          [[ $(git cat-file -t "refs/tags/$TAG") == tag ]] || { echo "::error::$TAG is lightweight; use git tag -a"; exit 1; }
+          git merge-base --is-ancestor "refs/tags/$TAG^{commit}" origin/main || { echo "::error::$TAG is not on main"; exit 1; }
+
+          prerelease=false
+          [[ $TAG == *-* ]] && prerelease=true
+
+          highest="$(git tag --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)"
+          latest=false
+          [[ $prerelease == false && $TAG == "$highest" ]] && latest=true
+
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+
+      # For actionlint only.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache: false
+
+      # As in ci.yml: without this, `go run` compiles actionlint from source.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: actionlint-${{ runner.os }}-${{ hashFiles('Makefile') }}
+          restore-keys: actionlint-${{ runner.os }}-
+
+      # Against the newest dispelnet release, which the job summary names.
+      - name: Check
+        run: make check
+
+      - name: Build the tarball
+        id: tarball
+        run: |
+          name="recipes-${TAG#v}"
+          commit="refs/tags/${TAG}^{commit}"
+          stage="$RUNNER_TEMP/stage"
+
+          # One top-level directory, because dispelnet strips the first path
+          # segment, holding recipes/ without captures, LICENSE and NOTICE.
+          mkdir -p "$stage/$name" dist
+          git archive "$commit" -- recipes LICENSE NOTICE ':(exclude)*.captured' | tar -x -C "$stage/$name"
+          mv "$stage/$name"/recipes/* "$stage/$name"/
+          rmdir "$stage/$name/recipes"
+
+          # Fixed order, owner and times, so the same tag always builds the same
+          # bytes.
+          tar -C "$stage" --sort=name --mtime="@$(git log -1 --format=%ct "$commit")" \
+            --owner=0 --group=0 --numeric-owner --format=gnu -cf - "$name" \
+            | gzip -n > "dist/${name}.tar.gz"
+
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          tar -tzf "dist/${name}.tar.gz" | head -n 20
+
+      # Verify what a client unpacks. The tarball has no captures and verify
+      # needs them, so the tag's captures are laid beside it in the same layout.
+      - name: Verify the tarball as shipped
+        env:
+          NAME: ${{ steps.tarball.outputs.name }}
+        run: |
+          shipped="$RUNNER_TEMP/shipped"
+          mkdir -p "$shipped"
+          tar -xzf "dist/${NAME}.tar.gz" -C "$shipped" --strip-components=1
+          git archive --format=tar "refs/tags/${TAG}^{commit}:recipes" -- '*.captured' | tar -x -C "$shipped"
+          make verify-tree TREE="$shipped"
+
+      # Drafts are found by id: GitHub's by-tag lookup does not return them.
+      - name: Publish
+        env:
+          NAME: ${{ steps.tarball.outputs.name }}
+          PRERELEASE: ${{ steps.tag.outputs.prerelease }}
+          LATEST: ${{ steps.tag.outputs.latest }}
+        run: |
+          releases="repos/${GITHUB_REPOSITORY}/releases"
+          existing="$(gh api "$releases" --paginate --jq ".[] | select(.tag_name == env.TAG) | \"\(.id) \(.draft)\"")"
+
+          while read -r id draft; do
+            [[ -z ${id:-} ]] && continue
+            if [[ $draft == false ]]; then
+              echo "::error::$TAG is already published; an immutable release cannot be replaced. Cut a new version."
+              exit 1
+            fi
+            echo "deleting the draft left by an earlier run (release $id)"
+            gh api -X DELETE "$releases/$id"
+          done <<< "$existing"
+
+          flags=(--verify-tag --draft --title "$TAG" --generate-notes)
+          [[ $PRERELEASE == true ]] && flags+=(--prerelease)
+
+          gh release create "$TAG" "${flags[@]}" "dist/${NAME}.tar.gz"
+
+          id="$(gh api "$releases" --paginate --jq ".[] | select(.tag_name == env.TAG and .draft) | .id")"
+          [[ $id =~ ^[0-9]+$ ]] || { echo "::error::expected exactly one draft for $TAG, found '$id'"; exit 1; }
+
+          want="${NAME}.tar.gz $(stat -c %s "dist/${NAME}.tar.gz")"
+          got="$(gh api "$releases/$id/assets" --paginate --jq '.[] | "\(.name) \(.size)"')"
+
+          if [[ $want != "$got" ]]; then
+            echo "::error::draft assets do not match what was built"
+            diff <(echo "$want") <(echo "$got") || true
+            exit 1
+          fi
+
+          gh api -X PATCH "$releases/$id" -F draft=false -f make_latest="$LATEST" > /dev/null
+
+          # Fails if release immutability is off (docs/MAINTAINING.md).
+          gh release verify "$TAG" -R "$GITHUB_REPOSITORY"

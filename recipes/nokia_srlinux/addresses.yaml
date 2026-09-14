@@ -1,0 +1,37 @@
+# IPv4 (ARP) and IPv6 (neighbour discovery) are separate commands, joined on
+# `address`. An IPv4 and an IPv6 address never collide, and an address seen on
+# two subinterfaces is kept once, on purpose.
+
+family:   nokia_srlinux
+question: addresses
+applies:  ["*"]
+
+steps:
+  - id: v4interfaces
+    run: info from state /interface * subinterface * ipv4 arp neighbor * | as json
+    select: interface[*]
+    fields:
+      port: name
+
+  - id: ipv4
+    from: v4interfaces
+    select: subinterface[*].ipv4.arp.neighbor[*]
+    fields:
+      address: ipv4-address
+      mac:     link-layer-address
+
+  - id: v6interfaces
+    run: info from state /interface * subinterface * ipv6 neighbor-discovery neighbor * | as json
+    select: interface[*]
+    fields:
+      port: name
+
+  - id: ipv6
+    from: v6interfaces
+    select: subinterface[*].ipv6.neighbor-discovery.neighbor[*]
+    fields:
+      address: ipv6-address
+      mac:     link-layer-address
+
+  - join: [ipv4, ipv6]
+    on: address

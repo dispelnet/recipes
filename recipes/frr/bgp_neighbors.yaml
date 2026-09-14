@@ -1,0 +1,15 @@
+# `show bgp summary` lacks each peer's router-id and lists a peer once per
+# address family.
+
+family:   frr
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: vtysh -c "show bgp neighbors json"
+    select: "{*}"
+    key:    address
+    fields:
+      identity: remoteRouterId
+      as:       remoteAs
+      state:    {from: bgpState, lower: true}

@@ -1,0 +1,17 @@
+{
+  "10.0.1.0": {
+    "remoteAs": 65001,
+    "remoteRouterId": "10.255.0.1",
+    "bgpState": "Established"
+  },
+  "10.0.2.0": {
+    "remoteAs": 65002,
+    "remoteRouterId": "10.255.0.2",
+    "bgpState": "Established"
+  },
+  "2001:db8:1::2": {
+    "remoteAs": 65001,
+    "remoteRouterId": "10.255.0.1",
+    "bgpState": "Established"
+  }
+}

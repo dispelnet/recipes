@@ -1,0 +1,9 @@
+family:   nokia_srlinux
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: info from state /system name | as json
+    select: system.name
+    fields:
+      hostname: host-name

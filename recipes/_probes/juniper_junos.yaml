@@ -1,0 +1,9 @@
+id:        juniper_junos
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {contains: JUNOS}
+
+family:  juniper_junos

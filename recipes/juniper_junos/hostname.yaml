@@ -1,0 +1,16 @@
+# A multi-chassis device repeats the header once per routing engine, so this can
+# record several rows with the same name.
+
+family:   juniper_junos
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^Hostname:\s+${NAME} -> Record
+    fields:
+      hostname: NAME

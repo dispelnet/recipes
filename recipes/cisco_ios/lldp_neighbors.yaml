@@ -1,0 +1,25 @@
+# IOS shows no management address here, so a neighbour is identified by system
+# name alone. A device ID may contain spaces ("Polycom VVX 500" in the capture),
+# so the name runs up to the two or more spaces that end the column; `\S+` would
+# drop it.
+
+family:   cisco_ios
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      # networktocode/ntc-templates@c6dca50ea10fe5a23e750748582fddda263fb053
+      Value Required NEIGHBOR (.+?)
+      Value LOCAL_PORT (\S+)
+      Value Required NEIGHBOR_PORT (\S+)
+
+      Start
+        ^Device ID\s+Local Intf -> Table
+
+      Table
+        ^${NEIGHBOR}\s\s+${LOCAL_PORT}\s+\d+\s+\S*\s+${NEIGHBOR_PORT}\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT

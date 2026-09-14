@@ -1,0 +1,23 @@
+DispelNet recipes
+Copyright 2026 DispelNet
+
+This product includes device output and parsing taken from the following
+projects, each licensed under the Apache License, Version 2.0:
+
+- ntc-templates, https://github.com/networktocode/ntc-templates,
+  Copyright Network to Code, LLC
+- SuzieQ, https://github.com/netenglabs/suzieq, Copyright the SuzieQ authors
+- NAPALM, https://github.com/napalm-automation/napalm,
+  Copyright 2015 Spotify AB
+- Genie Parser, https://github.com/CiscoTestAutomation/genieparser,
+  by Cisco Systems, Inc.
+
+A template adapted from one of them names the project and commit in its first
+line.
+
+NAPALM's NOTICE reads:
+
+  This project includes software developed at Spotify AB.
+  Mircea Ulinic, Kirk Byers, David Barroso, and many others,
+  who are not necessarily associated with Spotify AB,
+  have contributed as well.

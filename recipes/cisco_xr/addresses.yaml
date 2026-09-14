@@ -1,0 +1,15 @@
+family:   cisco_xr
+question: addresses
+applies:  ["*"]
+
+steps:
+  - run: show arp
+    template: |
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value MAC ([0-9a-f]{4}\.[0-9a-f]{4}\.[0-9a-f]{4})
+
+      Start
+        ^${ADDRESS}\s+\S+\s+${MAC}\s -> Record
+    fields:
+      address: ADDRESS
+      mac:     MAC

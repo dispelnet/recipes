@@ -1,0 +1,13 @@
+family:   linux
+question: version
+applies:  ["*"]
+
+steps:
+  - run: uname -sr
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^Linux\s+${VERSION} -> Record
+    fields:
+      version: VERSION

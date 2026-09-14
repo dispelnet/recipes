@@ -1,0 +1,16 @@
+# `show version` never names the device, so the name comes from the
+# configuration.
+
+family:   cisco_xr
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show running-config hostname
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^hostname\s+${NAME} -> Record
+    fields:
+      hostname: NAME

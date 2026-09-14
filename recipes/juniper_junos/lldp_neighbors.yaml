@@ -1,0 +1,21 @@
+# The identity is the system name, not the chassis id.
+
+family:   juniper_junos
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      Value LOCAL_PORT (\S+)
+      Value NEIGHBOR_PORT (\S+)
+      Value NEIGHBOR (\S+)
+
+      Start
+        ^Local Interface -> Table
+
+      Table
+        ^${LOCAL_PORT}\s+\S+\s+\S+\s+${NEIGHBOR_PORT}\s+${NEIGHBOR}\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT

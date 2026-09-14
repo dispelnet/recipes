@@ -1,0 +1,19 @@
+family:   cisco_xr
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      Value NEIGHBOR (\S+)
+      Value LOCAL_PORT (\S+)
+      Value NEIGHBOR_PORT (\S+)
+
+      Start
+        ^Device ID\s+Local Intf -> Table
+
+      Table
+        ^${NEIGHBOR}\s+${LOCAL_PORT}\s+\d+\s+\S*\s+${NEIGHBOR_PORT}\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT

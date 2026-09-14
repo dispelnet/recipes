@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/version.json",
+  "title": "version",
+  "description": "Which release the device is running, one row. It is what decides which recipes apply to the device, through each recipe's applies: patterns.",
+  "type": "object",
+  "required": ["version"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "x-dispelnet-type": "text",
+      "description": "The release string, as the device reports it and as applies: patterns are matched against. Not normalised: vendors number releases in ways no single rule can compare."
+    }
+  }
+}

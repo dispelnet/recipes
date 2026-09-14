@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/local-addresses.json",
+  "title": "local-addresses",
+  "description": "The addresses the device itself holds, one row per address. This is how a device claims the addresses other devices will report it at, so two sightings of one device can be recognised as one device.",
+  "type": "object",
+  "required": ["identity"],
+  "additionalProperties": false,
+  "properties": {
+    "identity": {
+      "type": "string",
+      "x-dispelnet-type": "ip",
+      "description": "An address the device holds, without any prefix length."
+    },
+    "port": {
+      "type": "string",
+      "x-dispelnet-type": "interface",
+      "description": "The interface holding the address."
+    }
+  }
+}

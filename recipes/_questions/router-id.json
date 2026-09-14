@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/router-id.json",
+  "title": "router-id",
+  "description": "The router-id the device claims for itself, normally one row. It is what resolves a far end that neighbours report by router-id rather than by name or address.",
+  "type": "object",
+  "required": ["identity"],
+  "additionalProperties": false,
+  "properties": {
+    "identity": {
+      "type": "string",
+      "x-dispelnet-type": "router-id",
+      "description": "The device's own router-id."
+    }
+  }
+}

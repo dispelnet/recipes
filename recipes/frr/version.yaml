@@ -1,0 +1,13 @@
+family:   frr
+question: version
+applies:  ["*"]
+
+steps:
+  - run: vtysh -c "show version"
+    template: |
+      Value VERSION ([0-9][^_ ]*)
+
+      Start
+        ^FRRouting\s+${VERSION} -> Record
+    fields:
+      version: VERSION

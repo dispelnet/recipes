@@ -1,0 +1,24 @@
+# `vrf all` includes the default VRF. A peer that is not up reports router ID
+# 0.0.0.0, which the pattern excludes, so it records no row.
+
+family:   arista_eos
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show ip bgp neighbors vrf all
+    template: |
+      Value Required ADDRESS ([0-9a-fA-F.:]+)
+      Value REMOTE_AS ([\d.]+)
+      Value Required ROUTER_ID ([1-9]\d*\.\d+\.\d+\.\d+)
+      Value STATE (\w+)
+
+      Start
+        ^BGP neighbor is ${ADDRESS}, remote AS ${REMOTE_AS},
+        ^\s+BGP version \d+, remote router ID ${ROUTER_ID},
+        ^\s+BGP state is ${STATE} -> Record
+    fields:
+      identity: ROUTER_ID
+      address:  ADDRESS
+      as:       REMOTE_AS
+      state:    {from: STATE, lower: true}

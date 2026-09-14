@@ -1,0 +1,22 @@
+# Only the first version line is read, because `show version` then lists a
+# bracketed version per package suite -- and one of those, the documentation
+# package, carries a typo'd release nobody runs. EX switches and vmhost print
+# no `Junos:` line at all, which is what the second rule is for.
+
+family:   juniper_junos
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\d+\.\d+[A-Z]\d+[^\]\s]*)
+
+      Start
+        ^Junos:\s+${VERSION} -> Record Done
+        ^JUNOS .*\[${VERSION}\] -> Record Done
+
+      Done
+        ^.*$$
+    fields:
+      version: VERSION

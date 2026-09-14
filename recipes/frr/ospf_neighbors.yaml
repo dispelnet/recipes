@@ -1,0 +1,14 @@
+# The map key is the neighbour's router-id.
+
+family:   frr
+question: ospf-neighbors
+applies:  ["*"]
+
+steps:
+  - run: vtysh -c "show ip ospf neighbor json"
+    select: neighbors{*}[*]
+    key:    identity
+    fields:
+      address: ifaceAddress
+      state:   {from: nbrState, lower: true, before: "/"}
+      port:    {from: ifaceName, before: ":"}

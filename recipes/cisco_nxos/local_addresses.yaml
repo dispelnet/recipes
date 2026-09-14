@@ -1,0 +1,14 @@
+family:   cisco_nxos
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - run: show ip interface brief
+    template: |
+      Value INTERFACE (\S+)
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^${INTERFACE}\s+${ADDRESS}\s+\S -> Record
+    fields:
+      identity: ADDRESS

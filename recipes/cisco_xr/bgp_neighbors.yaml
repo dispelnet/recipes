@@ -1,0 +1,25 @@
+# `show bgp summary` lacks each peer's router-id, the identity. A peer that is
+# not up reports 0.0.0.0, which the pattern excludes, so it records no row.
+
+family:   cisco_xr
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show bgp neighbors
+    template: |
+      Value Required ADDRESS ([0-9a-fA-F.:]+)
+      Value REMOTE_AS ([\d.]+)
+      Value Required ROUTER_ID ([1-9]\d*\.\d+\.\d+\.\d+)
+      Value STATE (\w+)
+
+      Start
+        ^BGP neighbor is ${ADDRESS}\s*$$
+        ^\s+Remote AS ${REMOTE_AS},
+        ^\s+Remote router ID ${ROUTER_ID}
+        ^\s+BGP state = ${STATE} -> Record
+    fields:
+      identity: ROUTER_ID
+      address:  ADDRESS
+      as:       REMOTE_AS
+      state:    {from: STATE, lower: true}

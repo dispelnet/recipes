@@ -1,0 +1,13 @@
+family:   arista_eos
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show hostname
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^Hostname:\s+${NAME} -> Record
+    fields:
+      hostname: NAME

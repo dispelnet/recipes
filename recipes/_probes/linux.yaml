@@ -1,0 +1,12 @@
+# `generic` tier: the last resort, so operating systems built on Linux match
+# their own probe first.
+
+id:        linux
+tier:      generic
+transport: ssh
+command:   uname -sr
+
+is:
+  - {field: 1, equals: Linux}
+
+family:   linux

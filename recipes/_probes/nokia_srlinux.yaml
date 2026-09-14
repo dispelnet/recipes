@@ -1,0 +1,10 @@
+id:        nokia_srlinux
+tier:      vendor
+transport: ssh
+command:   info from state /system information | as json
+read:      json
+
+is:
+  - {from: system.information.description, contains: SRLinux}
+
+family:   nokia_srlinux

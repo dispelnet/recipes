@@ -1,0 +1,15 @@
+family:   juniper_junos
+question: addresses
+applies:  ["*"]
+
+steps:
+  - run: show arp no-resolve
+    template: |
+      Value MAC ([0-9a-f]{2}(:[0-9a-f]{2}){5})
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^${MAC}\s+${ADDRESS}\s -> Record
+    fields:
+      address: ADDRESS
+      mac:     MAC

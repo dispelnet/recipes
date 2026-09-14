@@ -1,0 +1,9 @@
+id:        cisco_nxos
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {contains: Nexus}
+
+family:  cisco_nxos

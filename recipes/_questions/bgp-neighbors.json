@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/bgp-neighbors.json",
+  "title": "bgp-neighbors",
+  "description": "BGP peers the device reports, one row per peer. The identity is the peer's own router-id, which is what lets a crawl recognise a device it has already visited; a peer's address alone cannot do that, because one device answers at many addresses.",
+  "type": "object",
+  "required": ["identity", "address"],
+  "additionalProperties": false,
+  "properties": {
+    "identity": {
+      "type": "string",
+      "x-dispelnet-type": "router-id",
+      "description": "The peer's router-id, as the peer reports it."
+    },
+    "address": {
+      "type": "string",
+      "x-dispelnet-type": "ip",
+      "description": "The address the session is established to, without any TCP port."
+    },
+    "as": {
+      "type": "string",
+      "x-dispelnet-type": "asn",
+      "description": "The peer's autonomous system number."
+    },
+    "state": {
+      "type": "string",
+      "x-dispelnet-type": "state",
+      "description": "Session state, such as established or idle."
+    }
+  }
+}

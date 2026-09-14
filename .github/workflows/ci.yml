@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  attestations: read # checking dispelnet's build provenance
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The required status check, against the newest dispelnet release.
+  checks:
+    name: Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # For actionlint only.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: stable
+          cache: false
+
+      # `make lint` runs a pinned actionlint with `go run`, which without this
+      # compiles it from source on every run. The key follows the Makefile,
+      # which is where the version is pinned.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: actionlint-${{ runner.os }}-${{ hashFiles('Makefile') }}
+          restore-keys: actionlint-${{ runner.os }}-
+
+      - name: Check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: make check

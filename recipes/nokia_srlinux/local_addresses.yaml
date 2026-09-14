@@ -1,0 +1,34 @@
+# Both address families are read, so an address reached over IPv6 is recognised
+# as the device's own.
+
+family:   nokia_srlinux
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - id: v4interfaces
+    run: info from state /interface * subinterface * ipv4 address * | as json
+    select: interface[*]
+    fields:
+      port: name
+
+  - id: ipv4
+    from: v4interfaces
+    select: subinterface[*].ipv4.address[*]
+    fields:
+      identity: {from: ip-prefix, before: "/"}
+
+  - id: v6interfaces
+    run: info from state /interface * subinterface * ipv6 address * | as json
+    select: interface[*]
+    fields:
+      port: name
+
+  - id: ipv6
+    from: v6interfaces
+    select: subinterface[*].ipv6.address[*]
+    fields:
+      identity: {from: ip-prefix, before: "/"}
+
+  - join: [ipv4, ipv6]
+    on: identity

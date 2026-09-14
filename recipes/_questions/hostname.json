@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/hostname.json",
+  "title": "hostname",
+  "description": "What the device calls itself, one row. This is what tells a crawl that two addresses are one device.",
+  "type": "object",
+  "required": ["hostname"],
+  "additionalProperties": false,
+  "properties": {
+    "hostname": {
+      "type": "string",
+      "x-dispelnet-type": "hostname",
+      "description": "The device's own name, as it reports it. A domain suffix is kept as reported."
+    }
+  }
+}

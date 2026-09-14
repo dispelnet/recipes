@@ -1,0 +1,15 @@
+# `peer-address` carries the TCP source port (10.0.0.21+52872).
+# `show bgp summary` lacks each peer's router-id.
+
+family:   juniper_junos
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show bgp neighbor | display json
+    select: bgp-information[*].bgp-peer[*]
+    fields:
+      identity: peer-id[*].data
+      address:  {from: "peer-address[*].data", before: "+"}
+      as:       peer-as[*].data
+      state:    {from: "peer-state[*].data", lower: true}

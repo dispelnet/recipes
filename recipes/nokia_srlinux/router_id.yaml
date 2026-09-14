@@ -1,0 +1,9 @@
+family:   nokia_srlinux
+question: router-id
+applies:  ["*"]
+
+steps:
+  - run: info from state /network-instance default protocols bgp router-id | as json
+    select: network-instance[*].protocols.bgp
+    fields:
+      identity: router-id

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dispelnet/recipes/_questions/lldp-neighbors.json",
+  "title": "lldp-neighbors",
+  "description": "Physical neighbours the device reports over LLDP, one row per neighbour. The address is genuinely optional: some platforms advertise no management-address TLV, leaving system name the only way to resolve the far end.",
+  "type": "object",
+  "required": ["identity"],
+  "additionalProperties": false,
+  "properties": {
+    "identity": {
+      "type": "string",
+      "x-dispelnet-type": "hostname",
+      "description": "The system name the neighbour calls itself."
+    },
+    "address": {
+      "type": "string",
+      "x-dispelnet-type": "ip",
+      "description": "The management address the neighbour advertises, where it advertises one."
+    },
+    "port": {
+      "type": "string",
+      "x-dispelnet-type": "interface",
+      "description": "The neighbour's own port, named as the neighbour names it. The same port is often spelled differently by the device at each end, which is why this is normalised before anything is matched on it."
+    }
+  }
+}

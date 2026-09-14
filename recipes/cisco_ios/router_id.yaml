@@ -1,0 +1,15 @@
+# A device without a router-id reports 0.0.0.0, which the pattern excludes.
+
+family:   cisco_ios
+question: router-id
+applies:  ["*"]
+
+steps:
+  - run: show ip bgp summary
+    template: |
+      Value ROUTER_ID ([1-9]\d*\.\d+\.\d+\.\d+)
+
+      Start
+        ^BGP router identifier ${ROUTER_ID}, -> Record
+    fields:
+      identity: ROUTER_ID

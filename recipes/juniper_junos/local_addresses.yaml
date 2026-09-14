@@ -1,0 +1,16 @@
+# Junos has no `show ip interface brief`; the address is the `Local:` half of
+# each inet Destination line.
+
+family:   juniper_junos
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - run: show interfaces
+    template: |
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^\s+Destination:\s+\S+,\s+Local:\s+${ADDRESS} -> Record
+    fields:
+      identity: ADDRESS

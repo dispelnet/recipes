@@ -1,0 +1,11 @@
+# `os` tier: FRR runs on Linux and must be recognised before the generic probe.
+
+id:        frr
+tier:      os
+transport: ssh
+command:   vtysh -c "show version"
+
+is:
+  - {field: 1, equals: FRRouting}
+
+family:   frr

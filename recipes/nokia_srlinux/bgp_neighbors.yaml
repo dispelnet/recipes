@@ -1,0 +1,14 @@
+family:   nokia_srlinux
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: info from state /network-instance * protocols bgp neighbor * | as json
+
+    select: network-instance[*].protocols.bgp.neighbor[*]
+
+    fields:
+      identity: peer-router-id
+      address:  peer-address
+      as:       peer-as
+      state:    session-state

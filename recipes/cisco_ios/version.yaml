@@ -1,0 +1,13 @@
+family:   cisco_ios
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION ([^,\s]+)
+
+      Start
+        ^Cisco IOS.*,\s+Version\s+${VERSION} -> Record
+    fields:
+      version: VERSION

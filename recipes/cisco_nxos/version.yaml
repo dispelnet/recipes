@@ -1,0 +1,16 @@
+# Newer releases print the version under `NXOS:`, older ones under `kickstart:`.
+
+family:   cisco_nxos
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^\s*NXOS: version ${VERSION} -> Record
+        ^\s*kickstart: version ${VERSION} -> Record
+    fields:
+      version: VERSION

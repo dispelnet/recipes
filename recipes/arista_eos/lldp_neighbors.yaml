@@ -1,0 +1,23 @@
+# EOS shows no management address here, so a neighbour is identified by system
+# name alone.
+
+family:   arista_eos
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      Value LOCAL_PORT (\S+)
+      Value NEIGHBOR (\S+)
+      Value NEIGHBOR_PORT (\S+)
+
+      Start
+        ^Port\s+Neighbor\s+Device\s+ID -> Table
+
+      Table
+        ^-+\s
+        ^${LOCAL_PORT}\s+${NEIGHBOR}\s+${NEIGHBOR_PORT}\s+\d+\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT
