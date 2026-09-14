@@ -1,0 +1,27 @@
+# Physical neighbours, by the name each one calls itself.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_xr/show_lldp_neighbors/cisco_xr_show_lldp_neighbors.raw
+#   match:  exact
+
+family:   cisco_xr
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      Value NEIGHBOR (\S+)
+      Value LOCAL_PORT (\S+)
+      Value NEIGHBOR_PORT (\S+)
+
+      Start
+        ^Device ID\s+Local Intf -> Table
+
+      Table
+        ^${NEIGHBOR}\s+${LOCAL_PORT}\s+\d+\s+\S*\s+${NEIGHBOR_PORT}\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT

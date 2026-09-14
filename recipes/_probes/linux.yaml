@@ -1,0 +1,14 @@
+# Anything Linux-shaped, and deliberately the last rung: several network
+# operating systems run on Linux and must be recognised as themselves first.
+# That is what the `generic` tier means.
+
+id:        linux
+tier:      generic
+transport: ssh
+command:   uname -sr
+
+is:
+  - {field: 1, equals: Linux}
+
+family:   linux
+verified: linux 7.0.0-30-generic

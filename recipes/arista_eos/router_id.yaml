@@ -1,0 +1,25 @@
+# What this device calls itself in routing protocols.
+#
+# Read from the BGP summary header, which states the local router-id before it
+# lists any peer. That header is also why bgp-neighbors cannot be written from
+# this command: the identifier here is this device's, not a peer's.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_ip_bgp_summary/arista_eos_show_ip_bgp_summary2.raw
+#   match:  exact
+
+family:   arista_eos
+question: router-id
+applies:  ["*"]
+
+steps:
+  - run: show ip bgp summary
+    template: |
+      Value ROUTER_ID (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^Router\s+identifier\s+${ROUTER_ID}, -> Record
+    fields:
+      identity: ROUTER_ID

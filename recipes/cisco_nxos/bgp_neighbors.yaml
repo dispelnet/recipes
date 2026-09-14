@@ -1,0 +1,32 @@
+# BGP peers, keyed by the router-id each one reports.
+#
+# `show ip bgp summary` gives addresses and the *local* router-id, so it cannot
+# answer this; the per-neighbour view reports both for every peer at once.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_nxos/show_ip_bgp_neighbors/cisco_nxos_show_ip_bgp_neighbors_short_uptime.raw
+#   match:  exact
+
+family:   cisco_nxos
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show ip bgp neighbors
+    template: |
+      Value Required ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value REMOTE_AS (\d+)
+      Value ROUTER_ID (\S+)
+      Value STATE (\w+)
+
+      Start
+        ^BGP neighbor is ${ADDRESS},\s+remote AS ${REMOTE_AS}
+        ^\s+BGP version \d+, remote router ID ${ROUTER_ID}
+        ^\s+BGP state = ${STATE} -> Record
+    fields:
+      identity: ROUTER_ID
+      address:  ADDRESS
+      as:       REMOTE_AS
+      state:    {from: STATE, lower: true}

@@ -1,0 +1,16 @@
+# Which release this device is running.
+
+family:   frr
+question: version
+applies:  ["*"]
+verified: frr 10.3.4
+
+steps:
+  - run: vtysh -c "show version"
+    template: |
+      Value VERSION ([0-9][^_ ]*)
+
+      Start
+        ^FRRouting\s+${VERSION} -> Record
+    fields:
+      version: VERSION

@@ -1,0 +1,19 @@
+# SR Linux answers structured JSON, so its own report is authoritative and there
+# is nothing to scrape. It is a vendor OS that names itself, hence the `vendor`
+# tier.
+#
+# The version reads v24.10.1-492-gf8858c5836. `trim` removes the leading v and
+# `before` cuts the build suffix, in that order -- reversing them leaves v24.10.1
+# -- because a recipe is written against 24.10.1.
+
+id:        nokia_srlinux
+tier:      vendor
+transport: ssh
+command:   info from state /system information | as json
+read:      json
+
+is:
+  - {from: system.information.description, contains: SRLinux}
+
+family:   nokia_srlinux
+verified: nokia_srlinux 24.10.1

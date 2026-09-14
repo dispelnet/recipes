@@ -1,0 +1,30 @@
+# BGP peers, keyed by the router-id each one reports.
+#
+# Junos answers `| display json`, so there is nothing to scrape. `peer-id` is
+# the peer's router-id -- the durable identity that lets a crawl recognise a
+# device it has already visited -- and `peer-address` is where to reach it.
+#
+# The address carries the TCP source port: 10.0.0.21+52872. `before: "+"` keeps
+# the half that can be dialled.
+#
+# `show bgp summary` cannot answer this question: it reports peers and the
+# *local* router-id, which is the same wall arista_eos still stands at.
+#
+# Capture:
+#   source: netenglabs/suzieq
+#   commit: 75198b5585ebef91f0659b6b1ec3c964cc2cd1ad
+#   file:   tests/integration/sqcmds/junos-input/bgp.output
+#   match:  extract
+#   select: 1.1.data
+
+family:   juniper_junos
+question: bgp-neighbors
+applies:  ["*"]
+
+command: show bgp neighbor | display json
+select:  bgp-information[*].bgp-peer[*]
+fields:
+  identity: peer-id[*].data
+  address:  {from: "peer-address[*].data", before: "+"}
+  as:       peer-as[*].data
+  state:    {from: "peer-state[*].data", lower: true}

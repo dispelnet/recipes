@@ -1,0 +1,31 @@
+# OSPF neighbours, keyed by router-id.
+#
+# EOS reports the neighbour's router-id and the address it is reachable at as
+# separate columns, which is exactly what the question wants: the identity is
+# durable and the address is how to get there.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_ip_ospf_neighbor/arista_eos_show_ip_ospf_neighbor_2.raw
+#   match:  exact
+
+family:   arista_eos
+question: ospf-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show ip ospf neighbor
+    template: |
+      Value NEIGHBOR_ID (\d+\.\d+\.\d+\.\d+)
+      Value STATE (\S+)
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value INTERFACE (\S+)
+
+      Start
+        ^${NEIGHBOR_ID}\s+\S+\s+\S+\s+\d+\s+${STATE}\s+\S+\s+${ADDRESS}\s+${INTERFACE} -> Record
+    fields:
+      identity: NEIGHBOR_ID
+      address:  ADDRESS
+      state:    {from: STATE, lower: true}
+      port:     INTERFACE

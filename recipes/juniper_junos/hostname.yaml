@@ -1,0 +1,30 @@
+# What a device calls itself, which is what tells a crawl that two addresses
+# are one device.
+#
+# Junos prints `Hostname:` in the header of `show version`, which the probe and
+# the version recipe already ran, so this costs no round trip.
+#
+# A multi-chassis device repeats that header once per routing engine, under an
+# `fpc0:` or `re0:` banner, so this can record more than one row. They carry the
+# same configured name -- host-name is chassis-wide -- and the caller reads the
+# first non-empty one.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/juniper_junos/show_version/juniper_junos_show_version.raw
+#   match:  exact
+
+family:   juniper_junos
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^Hostname:\s+${NAME} -> Record
+    fields:
+      hostname: NAME

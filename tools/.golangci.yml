@@ -1,0 +1,38 @@
+# The same linters and formatters dispel uses, so the two codebases hold one
+# standard. depguard is left out: its rules are about dispel's own layering.
+version: "2"
+
+linters:
+  default: none
+  enable:
+    - errcheck     # unhandled errors, the most common Go defect
+    - errorlint    # wrapping and comparison mistakes around errors
+    - gocritic     # a broad set of correctness and style diagnostics
+    - gosec        # security issues
+    - govet
+    - ineffassign  # assignments that are never used
+    - misspell
+    - revive       # naming, doc comments, and general Go style
+    - staticcheck
+    - unused
+  settings:
+    revive:
+      rules:
+        - name: exported          # exported identifiers need doc comments
+        - name: error-strings     # error strings are lowercase and unpunctuated
+        - name: context-as-argument
+        - name: indent-error-flow
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - gosec
+
+formatters:
+  enable:
+    - gofumpt   # a stricter superset of gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/dispelnet/recipes/tools

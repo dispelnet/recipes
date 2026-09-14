@@ -1,0 +1,18 @@
+# Nobody has run this against a device, which is why it declares no
+# `verified:`.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_ios/show_version/cisco_ios_show_version.raw
+#   match:  exact
+
+id:        cisco_ios
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {contains: "Cisco IOS Software"}
+
+family:  cisco_ios

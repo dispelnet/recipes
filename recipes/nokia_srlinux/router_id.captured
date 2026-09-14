@@ -1,0 +1,12 @@
+{
+  "network-instance": [
+    {
+      "name": "default",
+      "protocols": {
+        "bgp": {
+          "router-id": "10.255.0.1"
+        }
+      }
+    }
+  ]
+}

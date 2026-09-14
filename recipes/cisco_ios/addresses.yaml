@@ -1,0 +1,25 @@
+# Which addresses are alive on a connected subnet, from the ARP table.
+#
+# This is how end hosts are found: no host runs a routing protocol, and the
+# address ARP yields is one that can be connected to.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_ios/show_ip_arp/cisco_ios_show_ip_arp.raw
+#   match:  exact
+
+family:   cisco_ios
+question: addresses
+applies:  ["*"]
+
+steps:
+  - run: show ip arp
+    template: |
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value MAC ([0-9a-f]{4}\.[0-9a-f]{4}\.[0-9a-f]{4})
+
+      Start
+        ^Internet\s+${ADDRESS}\s+\S+\s+${MAC}\s -> Record
+    fields:
+      address: ADDRESS

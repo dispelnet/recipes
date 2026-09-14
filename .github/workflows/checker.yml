@@ -1,0 +1,135 @@
+# dispelnet itself, run against a pull request's recipe data.
+#
+# dispelnet/dispel is private for now, and GitHub passes no secrets to a
+# workflow triggered from a fork. So this uses pull_request_target, which runs
+# this file as it is on the base branch: a pull request cannot change what this
+# job does. The rule that makes that safe is that no code from the pull request
+# ever runs here. Its recipe and capture files are copied out as data, and the
+# only programs run are dispelnet and dispel's own tests, both at a pinned
+# commit.
+#
+# Every pull request goes through this one job, `dispelnet checks`, which is the
+# required status check. Branch protection counts a job skipped by `if:` as
+# passing, so there is deliberately no separate fork variant that could be
+# skipped into a green check.
+#
+# When dispel becomes public, the token, both environments and the approval go
+# away, and these steps can move into ci.yml.
+name: dispelnet checks
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: dispelnet checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # external-pr requires a maintainer's approval, asked again on every push
+    # to the fork. internal requires none. Both hold DISPEL_READ_TOKEN, a
+    # fine-grained token with read-only contents on dispelnet/dispel alone.
+    environment: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository && 'external-pr' || 'internal' }}
+
+    steps:
+      # The base branch for a pull request, the pushed commit for a push. This
+      # is where the scripts below come from.
+      - name: Check out this repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: base
+          persist-credentials: false
+
+      - name: Check out the pull request's files
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          persist-credentials: false
+
+      - name: Choose the checker pin
+        id: pin
+        env:
+          EVENT: ${{ github.event_name }}
+          FORK: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository }}
+        run: |
+          read_pin() { tr -d '[:space:]' < "$1/.dispelnet-version"; }
+
+          if [[ $EVENT != pull_request_target ]]; then
+            pin="$(read_pin base)"
+          elif [[ $FORK == true ]]; then
+            if ! cmp -s base/.dispelnet-version pr/.dispelnet-version; then
+              echo "::error file=.dispelnet-version::a checker pin change must come from a branch in this repository"
+              exit 1
+            fi
+            pin="$(read_pin base)"
+          else
+            pin="$(read_pin pr)"
+          fi
+
+          if [[ ! $pin =~ ^([0-9a-f]{40}|v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?)$ ]]; then
+            echo "::error file=.dispelnet-version::expected a full dispel commit SHA or a release tag, got '$pin'"
+            exit 1
+          fi
+
+          echo "ref=$pin" >> "$GITHUB_OUTPUT"
+          echo "dispelnet checker pinned at $pin"
+
+      - name: Collect recipe data
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          source_dir=base
+          [[ $EVENT == pull_request_target ]] && source_dir=pr
+
+          bash base/.github/scripts/collect-tree.sh "$source_dir" "$RUNNER_TEMP/tree"
+
+          # Nothing else from the pull request is read after this point.
+          rm -rf pr
+
+      - name: Require the dispel token
+        env:
+          TOKEN: ${{ secrets.DISPEL_READ_TOKEN }}
+        run: |
+          if [[ -z $TOKEN ]]; then
+            echo "::error::DISPEL_READ_TOKEN is not set in this job's environment; see README, Repository settings"
+            exit 1
+          fi
+
+      # The token is used by this step alone. persist-credentials: false keeps
+      # it out of dispel/.git/config, so it is on no disk when recipe data is
+      # parsed.
+      - name: Check out dispel at the pin
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: dispelnet/dispel
+          ref: ${{ steps.pin.outputs.ref }}
+          token: ${{ secrets.DISPEL_READ_TOKEN }}
+          path: dispel
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: dispel/go.mod
+          cache-dependency-path: dispel/go.sum
+
+      - name: Build dispelnet
+        run: bash base/.github/scripts/build-checker.sh dispel "$RUNNER_TEMP/dispelnet"
+
+      - name: Verify recipes and probes
+        run: '"$RUNNER_TEMP/dispelnet" recipes verify --from "$RUNNER_TEMP/tree"'
+
+      - name: Corpus tests
+        run: bash base/.github/scripts/corpus-tests.sh dispel "$RUNNER_TEMP/tree"

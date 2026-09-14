@@ -1,0 +1,20 @@
+# What this device calls itself in BGP -- normally its OSPF router-id too, though
+# the two are separately configurable. It is the one identity a neighbour
+# reports that a crawl cannot otherwise resolve.
+#
+# The BGP summary carries it as a property of the local speaker rather than of
+# any peer, which is why this reads the summary where bgp-neighbors deliberately
+# does not: there, the summary omits each peer's router-id, and here the only
+# router-id wanted is the one the summary is about.
+#
+# router_id.captured beside this file is what the device answered.
+
+family:   frr
+question: router-id
+applies:  ["10.*"]
+verified: frr 10.3.4
+
+command: vtysh -c "show bgp summary json"
+select:  ipv4Unicast
+fields:
+  identity: routerId

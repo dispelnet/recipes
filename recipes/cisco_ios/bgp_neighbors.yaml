@@ -1,0 +1,35 @@
+# BGP peers, keyed by the router-id each one reports.
+#
+# The identity has to be the peer's router-id rather than its address: that is
+# what lets a crawl recognise a peer as a device it has already visited, and an
+# address only says where to knock. `show ip bgp summary` gives addresses and
+# the *local* router-id, so it cannot answer this; the per-neighbour view
+# reports both for every peer in one command.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_ios/show_ip_bgp_neighbors/cisco_ios_show_ip_bgp_neighbors_multiple.raw
+#   match:  exact
+
+family:   cisco_ios
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show ip bgp neighbors
+    template: |
+      Value Required ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value REMOTE_AS (\d+)
+      Value ROUTER_ID (\d+\.\d+\.\d+\.\d+)
+      Value STATE (\w+)
+
+      Start
+        ^BGP neighbor is ${ADDRESS},\s+(vrf \S+,\s+)?remote AS ${REMOTE_AS}
+        ^\s+BGP version \d+, remote router ID ${ROUTER_ID}
+        ^\s+BGP state = ${STATE} -> Record
+    fields:
+      identity: ROUTER_ID
+      address:  ADDRESS
+      as:       REMOTE_AS
+      state:    {from: STATE, lower: true}

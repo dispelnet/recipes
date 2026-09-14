@@ -1,0 +1,18 @@
+# Nobody has run this against a device, which is why it declares no
+# `verified:`.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_xr/show_version/cisco_xr_show_version.raw
+#   match:  exact
+
+id:        cisco_xr
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {contains: "Cisco IOS XR"}
+
+family:  cisco_xr

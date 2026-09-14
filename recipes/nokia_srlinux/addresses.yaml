@@ -1,0 +1,56 @@
+# The ARP table and the IPv6 neighbour-discovery table, which together are how
+# devices that run no routing protocol -- hosts -- are found at all. A routing
+# protocol says who this device peers with; a neighbour table says which
+# addresses are alive on a connected subnet, which is a different and often
+# more useful question. SR Linux answers that question once per family: ARP
+# for IPv4, neighbour discovery for IPv6. Reading only one would leave an
+# IPv6-only host invisible even though the device already knows about it.
+#
+# Neighbours are nested two deep, under each interface and each subinterface,
+# the same way in both tables. Each family is its own step because each is its
+# own command; the join at the end folds the two into one set of addresses, so
+# whoever asks this question does not need to know which family answered. The
+# join keys on `address`, not on anything naming a family, and that is safe:
+# an IPv4 dotted-decimal string and an IPv6 colon-hex string can never read as
+# the same key, so the two families concatenate rather than colliding. The
+# same key also means a repeated address within one family -- the same IPv4
+# neighbour reported on two subinterfaces -- collapses to a single row. That
+# is intended, not a loss: an address a device knows twice is still one
+# address, and this question is asked to find addresses to dial, not to count
+# how many places one was seen.
+#
+# addresses.captured beside this file is what the device answered to both
+# commands.
+
+family:   nokia_srlinux
+question: addresses
+applies:  ["24.*"]
+verified: nokia_srlinux 24.10.1
+
+steps:
+  - id: v4interfaces
+    run: info from state /interface * subinterface * ipv4 arp neighbor * | as json
+    select: interface[*]
+    fields:
+      port: name
+
+  - id: ipv4
+    from: v4interfaces
+    select: subinterface[*].ipv4.arp.neighbor[*]
+    fields:
+      address: ipv4-address
+
+  - id: v6interfaces
+    run: info from state /interface * subinterface * ipv6 neighbor-discovery neighbor * | as json
+    select: interface[*]
+    fields:
+      port: name
+
+  - id: ipv6
+    from: v6interfaces
+    select: subinterface[*].ipv6.neighbor-discovery.neighbor[*]
+    fields:
+      address: ipv6-address
+
+  - join: [ipv4, ipv6]
+    on: address

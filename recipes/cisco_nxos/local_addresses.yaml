@@ -1,0 +1,22 @@
+# The addresses this device holds itself.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_nxos/show_ip_interface_brief/cisco_nxos_show_ip_interface_brief.raw
+#   match:  exact
+
+family:   cisco_nxos
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - run: show ip interface brief
+    template: |
+      Value INTERFACE (\S+)
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^${INTERFACE}\s+${ADDRESS}\s+\S -> Record
+    fields:
+      identity: ADDRESS

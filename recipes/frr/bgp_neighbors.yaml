@@ -1,0 +1,21 @@
+# FRR reports BGP peers as an object keyed by peer address, so the key is
+# itself a field: `{*}` iterates the values and `key:` gives the key back.
+#
+# The summary command looks like the obvious choice and is not enough: it omits
+# the peer's router-id and reports a peer once per address family, which would
+# make one neighbour look like two.
+#
+# bgp_neighbors.captured beside this file is what the device answered.
+
+family:   frr
+question: bgp-neighbors
+applies:  ["10.*"]
+verified: frr 10.3.4
+
+command: vtysh -c "show bgp neighbors json"
+select:  "{*}"
+key:     address
+fields:
+  identity: remoteRouterId
+  as:       remoteAs
+  state:    {from: bgpState, lower: true}

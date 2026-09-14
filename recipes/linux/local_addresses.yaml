@@ -1,0 +1,29 @@
+# The addresses this device holds, which is how a neighbour table entry
+# elsewhere becomes a link to this device.
+#
+# Every other address question asks what a device has *seen*. This one asks what
+# it *is*: a leaf reports its host as an ARP entry on a bridge, and nothing
+# relates that entry to the host until the host says the address is its own.
+# Like router-id, that is a fact to collect rather than a resemblance to notice.
+#
+# local_addresses.captured beside this file is what the device answered.
+
+family:   linux
+question: local-addresses
+applies:  ["*"]
+verified: linux 7.0.0-31-generic
+# The interface holding an address lives on the parent of the address, so this
+# is two steps: select the interfaces and read their names, then look inside
+# each one. Which interface holds an address is how the interface a device is
+# managed through is worked out later, without anyone having to name it.
+steps:
+  - id: interfaces
+    run: ip -j addr
+    select: "[*]"
+    fields:
+      port: ifname
+
+  - from: interfaces
+    select: addr_info[*]
+    fields:
+      identity: local

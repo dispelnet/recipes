@@ -1,0 +1,27 @@
+# Which release this device is running.
+#
+# Junos reports a release on a Junos: line where it has one, and otherwise
+# only inside the bracketed suite versions. The value matches a release --
+# digits, a dot, a letter -- so the build strings those brackets also carry
+# do not answer for one.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/juniper_junos/show_version/juniper_junos_show_version.raw
+#   match:  exact
+
+family:   juniper_junos
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\d+\.\d+[A-Z]\d+[^\]\s]*)
+
+      Start
+        ^Junos:\s+${VERSION} -> Record
+        ^JUNOS .*\[${VERSION}\] -> Record
+    fields:
+      version: VERSION

@@ -1,0 +1,25 @@
+# What a device calls itself.
+#
+# The transcript includes the device's own prompt echo, which is what an EOS
+# session returns, so the template reads only the labelled line and ignores
+# the rest.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_hostname/arista_eos_show_hostname.raw
+#   match:  exact
+
+family:   arista_eos
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show hostname
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^Hostname:\s+${NAME} -> Record
+    fields:
+      hostname: NAME

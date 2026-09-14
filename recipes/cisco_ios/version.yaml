@@ -1,0 +1,25 @@
+# Which release this device is running.
+#
+# IOS prints its version mid-line, after the image description and a comma.
+# No probe locator could reach it -- reading line starts is all they do --
+# which is why this is a recipe and the probe format lost its version field.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_ios/show_version/cisco_ios_show_version.raw
+#   match:  exact
+
+family:   cisco_ios
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION ([^,\s]+)
+
+      Start
+        ^Cisco IOS.*,\s+Version\s+${VERSION} -> Record
+    fields:
+      version: VERSION

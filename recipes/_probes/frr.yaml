@@ -1,0 +1,15 @@
+# FRR runs on Linux, so it sits in the `os` tier and is asked before the generic
+# rung. Without that, every router in a fabric identifies as a plain host.
+#
+# frr.captured beside this file is what the lab's leaf1 answered.
+
+id:        frr
+tier:      os
+transport: ssh
+command:   vtysh -c "show version"
+
+is:
+  - {field: 1, equals: FRRouting}
+
+family:   frr
+verified: frr 10.3.4

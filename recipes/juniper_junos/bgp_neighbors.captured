@@ -1,0 +1,1051 @@
+{
+    "bgp-information" : [
+    {
+        "attributes" : {"xmlns" : "http://xml.juniper.net/junos/19.4R0/junos-routing"}, 
+        "bgp-peer" : [
+        {
+            "attributes" : {"junos:style" : "detail"}, 
+            "peer-address" : [
+            {
+                "data" : "10.0.0.21+52872"
+            }
+            ], 
+            "peer-as" : [
+            {
+                "data" : "64520"
+            }
+            ], 
+            "local-address" : [
+            {
+                "data" : "10.0.0.11+179"
+            }
+            ], 
+            "local-as" : [
+            {
+                "data" : "64520"
+            }
+            ], 
+            "peer-group" : [
+            {
+                "data" : "evpn_overlay"
+            }
+            ], 
+            "peer-cfg-rti" : [
+            {
+                "data" : "master"
+            }
+            ], 
+            "peer-fwd-rti" : [
+            {
+                "data" : "master"
+            }
+            ], 
+            "peer-type" : [
+            {
+                "data" : "Internal"
+            }
+            ], 
+            "peer-state" : [
+            {
+                "data" : "Established"
+            }
+            ], 
+            "peer-flags" : [
+            {
+                "data" : "Sync"
+            }
+            ], 
+            "last-state" : [
+            {
+                "data" : "OpenConfirm"
+            }
+            ], 
+            "last-event" : [
+            {
+                "data" : "RecvKeepAlive"
+            }
+            ], 
+            "last-error" : [
+            {
+                "data" : "None"
+            }
+            ], 
+            "bgp-option-information" : [
+            {
+                "attributes" : {"xmlns" : "http://xml.juniper.net/junos/19.4R0/junos-routing"}, 
+                "bgp-options" : [
+                {
+                    "data" : "Preference LocalAddress AddressFamily Rib-group Refresh"
+                }
+                ], 
+                "bgp-options2" : [
+                {
+                }
+                ], 
+                "bgp-options-extended" : [
+                {
+                    "data" : "GracefulShutdownRcv"
+                }
+                ], 
+                "address-families" : [
+                {
+                    "data" : "evpn"
+                }
+                ], 
+                "local-address" : [
+                {
+                    "data" : "10.0.0.11"
+                }
+                ], 
+                "holdtime" : [
+                {
+                    "data" : "90"
+                }
+                ], 
+                "preference" : [
+                {
+                    "data" : "170"
+                }
+                ], 
+                "gshut-recv-local-preference" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }
+            ], 
+            "flap-count" : [
+            {
+                "data" : "0"
+            }
+            ], 
+            "peer-id" : [
+            {
+                "data" : "10.0.0.21"
+            }
+            ], 
+            "local-id" : [
+            {
+                "data" : "10.0.0.11"
+            }
+            ], 
+            "active-holdtime" : [
+            {
+                "data" : "90"
+            }
+            ], 
+            "keepalive-interval" : [
+            {
+                "data" : "30"
+            }
+            ], 
+            "group-index" : [
+            {
+                "data" : "0"
+            }
+            ], 
+            "peer-index" : [
+            {
+                "data" : "0"
+            }
+            ], 
+            "snmp-index" : [
+            {
+                "data" : "0"
+            }
+            ], 
+            "bgp-peer-iosession" : [
+            {
+                "iosession-thread-name" : [
+                {
+                    "data" : "bgpio-0"
+                }
+                ], 
+                "iosession-state" : [
+                {
+                    "data" : "Enabled"
+                }
+                ]
+            }
+            ], 
+            "bgp-bfd" : [
+            {
+                "bfd-configuration-state" : [
+                {
+                    "data" : "disabled"
+                }
+                ], 
+                "bfd-operational-state" : [
+                {
+                    "data" : "down"
+                }
+                ]
+            }
+            ], 
+            "peer-restart-nlri-configured" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "nlri-type-peer" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "nlri-type-session" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-refresh-capability" : [
+            {
+                "data" : "2"
+            }
+            ], 
+            "peer-stale-route-time-configured" : [
+            {
+                "data" : "300"
+            }
+            ], 
+            "peer-no-restart" : [
+            {
+                "data" : [null]
+            }
+            ], 
+            "peer-restart-flags-received" : [
+            {
+                "data" : "Notification"
+            }
+            ], 
+            "peer-restart-nlri-negotiated" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-end-of-rib-received" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-end-of-rib-sent" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-end-of-rib-scheduled" : [
+            {
+            }
+            ], 
+            "peer-no-llgr-restarter" : [
+            {
+                "data" : [null]
+            }
+            ], 
+            "peer-4byte-as-capability-advertised" : [
+            {
+                "data" : "64520"
+            }
+            ], 
+            "peer-addpath-not-supported" : [
+            {
+                "data" : [null]
+            }
+            ], 
+            "local-ext-nh-color-nlri" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "bgp-rib" : [
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "__default_evpn__.evpn.0"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "not advertising"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }, 
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "bgp.evpn.0"
+                }
+                ], 
+                "rib-bit" : [
+                {
+                    "data" : "20000"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "in sync"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "12"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "12"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "12"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "advertised-prefix-count" : [
+                {
+                    "data" : "11"
+                }
+                ]
+            }, 
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "default-switch.evpn.0"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "not advertising"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "3"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "3"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "3"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }, 
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "evpn-vrf.evpn.0"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "not advertising"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "9"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "9"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "9"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }
+            ], 
+            "bgp-traffic" : [
+            {
+                "last-received" : [
+                {
+                    "data" : "17"
+                }
+                ], 
+                "last-sent" : [
+                {
+                    "data" : "28"
+                }
+                ], 
+                "last-checked" : [
+                {
+                    "data" : "27025"
+                }
+                ], 
+                "input-messages" : [
+                {
+                    "data" : "2059"
+                }
+                ], 
+                "input-updates" : [
+                {
+                    "data" : "1101"
+                }
+                ], 
+                "input-refreshes" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "input-octets" : [
+                {
+                    "data" : "128388"
+                }
+                ]
+            }
+            ], 
+            "output-messages" : [
+            {
+                "data" : "968"
+            }
+            ], 
+            "output-updates" : [
+            {
+                "data" : "9"
+            }
+            ], 
+            "output-refreshes" : [
+            {
+                "data" : "6"
+            }
+            ], 
+            "output-octets" : [
+            {
+                "data" : "19291"
+            }
+            ], 
+            "bgp-output-queue" : [
+            {
+                "number" : [
+                {
+                    "data" : "1"
+                }
+                ], 
+                "count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "table-name" : [
+                {
+                    "data" : "bgp.evpn.0"
+                }
+                ], 
+                "rib-adv-nlri" : [
+                {
+                    "data" : "evpn"
+                }
+                ]
+            }
+            ]
+        }, 
+        {
+            "attributes" : {"junos:style" : "detail"}, 
+            "peer-address" : [
+            {
+                "data" : "10.0.0.22+179"
+            }
+            ], 
+            "peer-as" : [
+            {
+                "data" : "64520"
+            }
+            ], 
+            "local-address" : [
+            {
+                "data" : "10.0.0.11+63955"
+            }
+            ], 
+            "local-as" : [
+            {
+                "data" : "64520"
+            }
+            ], 
+            "peer-group" : [
+            {
+                "data" : "evpn_overlay"
+            }
+            ], 
+            "peer-cfg-rti" : [
+            {
+                "data" : "master"
+            }
+            ], 
+            "peer-fwd-rti" : [
+            {
+                "data" : "master"
+            }
+            ], 
+            "peer-type" : [
+            {
+                "data" : "Internal"
+            }
+            ], 
+            "peer-state" : [
+            {
+                "data" : "Established"
+            }
+            ], 
+            "peer-flags" : [
+            {
+                "data" : "Sync"
+            }
+            ], 
+            "last-state" : [
+            {
+                "data" : "OpenConfirm"
+            }
+            ], 
+            "last-event" : [
+            {
+                "data" : "RecvKeepAlive"
+            }
+            ], 
+            "last-error" : [
+            {
+                "data" : "None"
+            }
+            ], 
+            "bgp-option-information" : [
+            {
+                "attributes" : {"xmlns" : "http://xml.juniper.net/junos/19.4R0/junos-routing"}, 
+                "bgp-options" : [
+                {
+                    "data" : "Preference LocalAddress AddressFamily Rib-group Refresh"
+                }
+                ], 
+                "bgp-options2" : [
+                {
+                }
+                ], 
+                "bgp-options-extended" : [
+                {
+                    "data" : "GracefulShutdownRcv"
+                }
+                ], 
+                "address-families" : [
+                {
+                    "data" : "evpn"
+                }
+                ], 
+                "local-address" : [
+                {
+                    "data" : "10.0.0.11"
+                }
+                ], 
+                "holdtime" : [
+                {
+                    "data" : "90"
+                }
+                ], 
+                "preference" : [
+                {
+                    "data" : "170"
+                }
+                ], 
+                "gshut-recv-local-preference" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }
+            ], 
+            "flap-count" : [
+            {
+                "data" : "0"
+            }
+            ], 
+            "peer-id" : [
+            {
+                "data" : "10.0.0.22"
+            }
+            ], 
+            "local-id" : [
+            {
+                "data" : "10.0.0.11"
+            }
+            ], 
+            "active-holdtime" : [
+            {
+                "data" : "90"
+            }
+            ], 
+            "keepalive-interval" : [
+            {
+                "data" : "30"
+            }
+            ], 
+            "group-index" : [
+            {
+                "data" : "0"
+            }
+            ], 
+            "peer-index" : [
+            {
+                "data" : "1"
+            }
+            ], 
+            "snmp-index" : [
+            {
+                "data" : "1"
+            }
+            ], 
+            "bgp-peer-iosession" : [
+            {
+                "iosession-thread-name" : [
+                {
+                    "data" : "bgpio-0"
+                }
+                ], 
+                "iosession-state" : [
+                {
+                    "data" : "Enabled"
+                }
+                ]
+            }
+            ], 
+            "bgp-bfd" : [
+            {
+                "bfd-configuration-state" : [
+                {
+                    "data" : "disabled"
+                }
+                ], 
+                "bfd-operational-state" : [
+                {
+                    "data" : "down"
+                }
+                ]
+            }
+            ], 
+            "peer-restart-nlri-configured" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "nlri-type-peer" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "nlri-type-session" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-refresh-capability" : [
+            {
+                "data" : "2"
+            }
+            ], 
+            "peer-stale-route-time-configured" : [
+            {
+                "data" : "300"
+            }
+            ], 
+            "peer-no-restart" : [
+            {
+                "data" : [null]
+            }
+            ], 
+            "peer-restart-flags-received" : [
+            {
+                "data" : "Notification"
+            }
+            ], 
+            "peer-restart-nlri-negotiated" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-end-of-rib-received" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-end-of-rib-sent" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "peer-end-of-rib-scheduled" : [
+            {
+            }
+            ], 
+            "peer-no-llgr-restarter" : [
+            {
+                "data" : [null]
+            }
+            ], 
+            "peer-4byte-as-capability-advertised" : [
+            {
+                "data" : "64520"
+            }
+            ], 
+            "peer-addpath-not-supported" : [
+            {
+                "data" : [null]
+            }
+            ], 
+            "local-ext-nh-color-nlri" : [
+            {
+                "data" : "evpn"
+            }
+            ], 
+            "bgp-rib" : [
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "__default_evpn__.evpn.0"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "not advertising"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }, 
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "bgp.evpn.0"
+                }
+                ], 
+                "rib-bit" : [
+                {
+                    "data" : "20000"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "in sync"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "12"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "12"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "advertised-prefix-count" : [
+                {
+                    "data" : "11"
+                }
+                ]
+            }, 
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "default-switch.evpn.0"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "not advertising"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "3"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "3"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }, 
+            {
+                "attributes" : {"junos:style" : "detail"}, 
+                "name" : [
+                {
+                    "data" : "evpn-vrf.evpn.0"
+                }
+                ], 
+                "bgp-rib-state" : [
+                {
+                    "data" : "BGP restart is complete"
+                }
+                ], 
+                "vpn-rib-state" : [
+                {
+                    "data" : "VPN restart is complete"
+                }
+                ], 
+                "send-state" : [
+                {
+                    "data" : "not advertising"
+                }
+                ], 
+                "active-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "received-prefix-count" : [
+                {
+                    "data" : "9"
+                }
+                ], 
+                "accepted-prefix-count" : [
+                {
+                    "data" : "9"
+                }
+                ], 
+                "suppressed-prefix-count" : [
+                {
+                    "data" : "0"
+                }
+                ]
+            }
+            ], 
+            "bgp-traffic" : [
+            {
+                "last-received" : [
+                {
+                    "data" : "23"
+                }
+                ], 
+                "last-sent" : [
+                {
+                    "data" : "2"
+                }
+                ], 
+                "last-checked" : [
+                {
+                    "data" : "27019"
+                }
+                ], 
+                "input-messages" : [
+                {
+                    "data" : "2362"
+                }
+                ], 
+                "input-updates" : [
+                {
+                    "data" : "1389"
+                }
+                ], 
+                "input-refreshes" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "input-octets" : [
+                {
+                    "data" : "156949"
+                }
+                ]
+            }
+            ], 
+            "output-messages" : [
+            {
+                "data" : "965"
+            }
+            ], 
+            "output-updates" : [
+            {
+                "data" : "9"
+            }
+            ], 
+            "output-refreshes" : [
+            {
+                "data" : "4"
+            }
+            ], 
+            "output-octets" : [
+            {
+                "data" : "19226"
+            }
+            ], 
+            "bgp-output-queue" : [
+            {
+                "number" : [
+                {
+                    "data" : "1"
+                }
+                ], 
+                "count" : [
+                {
+                    "data" : "0"
+                }
+                ], 
+                "table-name" : [
+                {
+                    "data" : "bgp.evpn.0"
+                }
+                ], 
+                "rib-adv-nlri" : [
+                {
+                    "data" : "evpn"
+                }
+                ]
+            }
+            ]
+        }
+        ]
+    }
+    ]
+}

@@ -1,0 +1,39 @@
+# Physical neighbours, by the name each one calls itself.
+#
+# IOS reports no management address in this view, so a far end is resolvable
+# only by system name -- which the contract allows, and which SR Linux already
+# does for the same reason.
+#
+# A device ID may contain spaces: this capture carries a "Polycom VVX 500". So
+# the name is `.+?` up to the two-or-more spaces that separate the column, not
+# `\S+` -- which silently dropped that neighbour, and would drop a real link.
+#
+# Derived from ntc-templates cisco_ios_show_lldp_neighbors.textfsm. Its own
+# value uses a lookbehind, which Go's RE2 engine has no equivalent for, so the
+# column rule is carried rather than the regex.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_ios/show_lldp_neighbors/cisco_ios_show_lldp_neighbors.raw
+#   match:  exact
+
+family:   cisco_ios
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      Value Required NEIGHBOR (.+?)
+      Value LOCAL_PORT (\S+)
+      Value Required NEIGHBOR_PORT (\S+)
+
+      Start
+        ^Device ID\s+Local Intf -> Table
+
+      Table
+        ^${NEIGHBOR}\s\s+${LOCAL_PORT}\s+\d+\s+\S*\s+${NEIGHBOR_PORT}\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT

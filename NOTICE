@@ -1,0 +1,25 @@
+DispelNet recipes
+Copyright 2026 DispelNet
+
+This product includes device output transcripts from ntc-templates
+(https://github.com/networktocode/ntc-templates), commit
+c6dca50ea10fe5a23e750748582fddda263fb053 (2026-08-23), Copyright Network to
+Code, LLC, licensed under the Apache License, Version 2.0. They are
+the captured output beside most cisco_ios, cisco_nxos, cisco_xr, arista_eos and
+juniper_junos recipes and probes.
+
+This product also includes device output from suzieq
+(https://github.com/netenglabs/suzieq), commit
+75198b5585ebef91f0659b6b1ec3c964cc2cd1ad, Copyright the SuzieQ authors,
+licensed under the Apache License, Version 2.0. It is
+juniper_junos/bgp_neighbors.captured, extracted verbatim from that project's
+tests/integration/sqcmds/junos-input/bgp.output (host leaf01,
+`show bgp neighbor | display json`).
+
+Each recipe or probe that carries upstream output has a `# Capture:` block
+naming the source, the commit and the exact upstream file, and CI checks the
+captured output against that file at that commit.
+
+None of the output taken from upstream has been verified against hardware by
+this project, which is why the recipes and probes that read it declare no
+`verified:`.

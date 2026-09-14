@@ -1,0 +1,26 @@
+# Which addresses are alive on a connected subnet, from the ARP table.
+#
+# Junos prints the MAC first and the address second, which is the reverse of
+# every other family here -- a reminder that the shape of an answer is the
+# vendor's choice and the question is ours.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/juniper_junos/show_arp_no-resolve/juniper_junos_show_arp_no-resolve.raw
+#   match:  exact
+
+family:   juniper_junos
+question: addresses
+applies:  ["*"]
+
+steps:
+  - run: show arp no-resolve
+    template: |
+      Value MAC ([0-9a-f]{2}(:[0-9a-f]{2}){5})
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^${MAC}\s+${ADDRESS}\s -> Record
+    fields:
+      address: ADDRESS

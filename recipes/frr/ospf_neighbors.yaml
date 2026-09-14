@@ -1,0 +1,20 @@
+# OSPF neighbours are keyed by router-id, and each holds a list: one entry per
+# adjacency, because two routers can be adjacent on more than one link. So this
+# is a map of lists -- `neighbors{*}[*]` -- and the map key is the identity.
+#
+# ifaceName reads "eth1:10.0.1.1", where the interface is the useful half.
+#
+# ospf_neighbors.captured beside this file is what the device answered.
+
+family:   frr
+question: ospf-neighbors
+applies:  ["10.*"]
+verified: frr 10.3.4
+
+command: vtysh -c "show ip ospf neighbor json"
+select:  neighbors{*}[*]
+key:     identity
+fields:
+  address: ifaceAddress
+  state:   {from: nbrState, lower: true}
+  port:    {from: ifaceName, before: ":"}

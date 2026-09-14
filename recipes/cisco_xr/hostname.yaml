@@ -1,0 +1,31 @@
+# What a device calls itself, which is what tells a crawl that two addresses
+# are one device.
+#
+# XR is the one family here that has to be asked twice. Its `show version`
+# names the platform and the release but never the device -- `cisco NCS-5500 ()
+# processor` is as close as it comes -- so the name has to come from the
+# configuration instead, and this is the one hostname recipe that costs a round
+# trip.
+#
+# XR prefixes command output with a timestamp line the device echoes. It does
+# not start with `hostname`, so it is simply not matched.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_xr/show_running-config_hostname/cisco_xr_show_run_hostname.raw
+#   match:  exact
+
+family:   cisco_xr
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show running-config hostname
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^hostname\s+${NAME} -> Record
+    fields:
+      hostname: NAME

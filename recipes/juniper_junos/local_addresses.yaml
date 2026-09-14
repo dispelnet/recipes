@@ -1,0 +1,26 @@
+# The addresses this device holds itself.
+#
+# Junos has no `show ip interface brief`: addresses live inside the full
+# interface output, on the `Local:` half of each protocol block's Destination
+# line. Only inet lines carry one, so an interface with no address records
+# nothing.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/juniper_junos/show_interfaces/juniper_junos_show_interfaces.raw
+#   match:  exact
+
+family:   juniper_junos
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - run: show interfaces
+    template: |
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^\s+Destination:\s+\S+,\s+Local:\s+${ADDRESS} -> Record
+    fields:
+      identity: ADDRESS

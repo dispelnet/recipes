@@ -1,0 +1,20 @@
+# Upstream projects a capture may be taken from.
+#
+# Each source is reviewed once, when it is added here, rather than trusted per
+# file. For every commit a capture names, the provenance check fetches
+# license_file at that commit and requires license_marker in it, so the licence
+# is proven for the commit the capture came from. A marker is one line, so
+# indentation in the licence file cannot break the match.
+#
+# Adding a source here also means naming it in NOTICE, in the same pull request.
+
+networktocode/ntc-templates:
+  license: Apache-2.0
+  license_file: LICENSE
+  # ntc-templates carries Apache-2.0's short notice form, not the full text.
+  license_marker: "Licensed under the Apache License, Version 2.0"
+
+netenglabs/suzieq:
+  license: Apache-2.0
+  license_file: LICENSE
+  license_marker: "Version 2.0, January 2004"

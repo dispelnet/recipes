@@ -1,0 +1,29 @@
+# Which addresses are alive on a connected subnet, from the ARP table.
+#
+# This is how end hosts are found: no host runs a routing protocol, and the
+# address ARP yields is one that can be connected to.
+#
+# The transcript spans several VRFs and includes an entry whose age reads N/A
+# and whose interface says "not learned". Both are still addresses this device
+# has seen, so both are read; the age is not.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_ip_arp/arista_eos_show_ip_arp1.raw
+#   match:  exact
+
+family:   arista_eos
+question: addresses
+applies:  ["*"]
+
+steps:
+  - run: show ip arp
+    template: |
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value MAC ([0-9a-f]{4}\.[0-9a-f]{4}\.[0-9a-f]{4})
+
+      Start
+        ^${ADDRESS}\s+\S+\s+${MAC}\s -> Record
+    fields:
+      address: ADDRESS

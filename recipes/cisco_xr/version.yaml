@@ -1,0 +1,23 @@
+# Which release this device is running.
+#
+# XR states it plainly, and often after a timestamp line the device echoes.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_xr/show_version/cisco_xr_show_version.raw
+#   match:  exact
+
+family:   cisco_xr
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^Cisco IOS XR Software, Version\s+${VERSION} -> Record
+    fields:
+      version: VERSION

@@ -1,0 +1,14 @@
+# What a device calls itself, which is what tells a crawl that two addresses
+# are one device.
+#
+# SR Linux answers structured JSON, so there is nothing to scrape.
+
+family:   nokia_srlinux
+question: hostname
+applies:  ["*"]
+verified: nokia_srlinux 24.10.1
+
+command: info from state /system name | as json
+select:  system.name
+fields:
+  hostname: host-name

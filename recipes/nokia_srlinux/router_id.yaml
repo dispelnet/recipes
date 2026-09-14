@@ -1,0 +1,20 @@
+# What this device calls itself in BGP -- normally its OSPF router-id too, though
+# the two are separately configurable. It is the one identity a neighbour
+# reports that a crawl cannot otherwise resolve.
+#
+# Every other question here asks what a device can see. This one asks what it
+# is: BGP and OSPF name a neighbour by router-id, a crawl reaches devices on
+# management addresses, and nothing ties the two together until the device is
+# asked its own. Collecting it is a fact; inferring it would be a guess.
+#
+# router_id.captured beside this file is what the device answered.
+
+family:   nokia_srlinux
+question: router-id
+applies:  ["24.*"]
+verified: nokia_srlinux 24.10.1
+
+command: info from state /network-instance default protocols bgp router-id | as json
+select:  network-instance[*].protocols.bgp
+fields:
+  identity: router-id

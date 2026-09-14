@@ -1,0 +1,26 @@
+# Which release this device is running.
+#
+# NX-OS files the version under NXOS: on newer releases and kickstart: on
+# older ones. Two rules in one template is how a text reader says "either
+# of these", which a probe assertion deliberately cannot.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_nxos/show_version/cisco_nxos_show_version4.raw
+#   match:  exact
+
+family:   cisco_nxos
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^\s*NXOS: version ${VERSION} -> Record
+        ^\s*kickstart: version ${VERSION} -> Record
+    fields:
+      version: VERSION

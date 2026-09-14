@@ -1,0 +1,32 @@
+# Physical neighbours, by the name each one calls itself.
+#
+# EOS reports no management address in this view, so a far end is resolvable
+# only by system name -- which the contract allows, and which SR Linux already
+# does for the same reason.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_lldp_neighbors/arista_eos_show_lldp_neighbors2.raw
+#   match:  exact
+
+family:   arista_eos
+question: lldp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show lldp neighbors
+    template: |
+      Value LOCAL_PORT (\S+)
+      Value NEIGHBOR (\S+)
+      Value NEIGHBOR_PORT (\S+)
+
+      Start
+        ^Port\s+Neighbor\s+Device\s+ID -> Table
+
+      Table
+        ^-+\s
+        ^${LOCAL_PORT}\s+${NEIGHBOR}\s+${NEIGHBOR_PORT}\s+\d+\s*$$ -> Record
+    fields:
+      identity: NEIGHBOR
+      port:     NEIGHBOR_PORT

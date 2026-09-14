@@ -1,0 +1,30 @@
+# BGP peers, keyed by the router-id each one reports.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_xr/show_bgp_neighbors/cisco_xr_show_bgp_neighbors1.raw
+#   match:  exact
+
+family:   cisco_xr
+question: bgp-neighbors
+applies:  ["*"]
+
+steps:
+  - run: show bgp neighbors
+    template: |
+      Value Required ADDRESS (\d+\.\d+\.\d+\.\d+)
+      Value REMOTE_AS (\d+)
+      Value ROUTER_ID (\d+\.\d+\.\d+\.\d+)
+      Value STATE (\w+)
+
+      Start
+        ^BGP neighbor is ${ADDRESS}\s*$$
+        ^\s+Remote AS ${REMOTE_AS},
+        ^\s+Remote router ID ${ROUTER_ID}
+        ^\s+BGP state = ${STATE} -> Record
+    fields:
+      identity: ROUTER_ID
+      address:  ADDRESS
+      as:       REMOTE_AS
+      state:    {from: STATE, lower: true}

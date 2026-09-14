@@ -1,0 +1,28 @@
+# LLDP is the only protocol here that reports an address a neighbour is managed
+# on, which is the address a crawl most wants.
+#
+# The local interface is on the parent of the neighbour, so this is two steps:
+# select the interfaces and read their names, then look further inside each one.
+# What the first step read stays on the rows the second produces.
+#
+# lldp_neighbors.captured beside this file is what the device answered.
+
+family:   nokia_srlinux
+question: lldp-neighbors
+applies:  ["24.*"]
+verified: nokia_srlinux 24.10.1
+
+steps:
+  - id: interfaces
+    run: info from state /system lldp interface * neighbor * | as json
+    select: system.lldp.interface[*]
+    fields:
+      port: name
+
+  - from: interfaces
+    select: neighbor[*]
+    fields:
+      identity: system-name
+      # A neighbour may advertise several; each becomes a row, and they merge
+      # back into one neighbour with several addresses.
+      address: management-address[*].address

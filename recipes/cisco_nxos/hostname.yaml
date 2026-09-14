@@ -1,0 +1,29 @@
+# What a device calls itself, which is what tells a crawl that two addresses
+# are one device.
+#
+# NX-OS files it under `Device name:` in the hardware block of `show version`,
+# indented. That is the command the probe and the version recipe already ran,
+# so this costs no round trip.
+#
+# `show hostname` also answers, and is not used: it would be a second command
+# for something already on the transcript in hand.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_nxos/show_version/cisco_nxos_show_version4.raw
+#   match:  exact
+
+family:   cisco_nxos
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^\s*Device name:\s+${NAME} -> Record
+    fields:
+      hostname: NAME

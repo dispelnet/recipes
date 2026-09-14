@@ -1,0 +1,30 @@
+# What a device calls itself, which is what tells a crawl that two addresses
+# are one device.
+#
+# IOS has no `show hostname`. It names itself on the uptime line of
+# `show version` -- the same command the probe and the version recipe already
+# ran -- so asking here costs no round trip: harvester.answered serves it from
+# what this visit has already been told.
+#
+# The name is anchored to the line start and bounded by ` uptime is`, because
+# `show version` is long and \S+ alone would match half of it.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/cisco_ios/show_version/cisco_ios_show_version.raw
+#   match:  exact
+
+family:   cisco_ios
+question: hostname
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^${NAME}\s+uptime\s+is\s -> Record
+    fields:
+      hostname: NAME

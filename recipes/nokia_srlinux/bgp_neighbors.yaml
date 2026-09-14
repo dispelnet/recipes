@@ -1,0 +1,29 @@
+# The first recipe to live outside the Go source, and the shape most take:
+# one command, one reading.
+#
+# Nokia SR Linux reports each BGP session separately, and a pair of routers
+# commonly peers over both IPv4 and IPv6, so several rows here can describe one
+# device. Collapsing them is not this file's business: a recipe says what the
+# device was asked and how to read the answer, and nothing more.
+
+family:   nokia_srlinux
+question: bgp-neighbors
+# bgp_neighbors.captured beside this file is what the device actually
+# answered, kept as the evidence for the line below. The tests read this recipe
+# against it, so neither can drift without the other noticing.
+applies:  ["24.*"]
+verified: nokia_srlinux 24.10.1
+
+steps:
+  # Every network-instance, not only "default": a device with VRFs has peers in
+  # them, and asking a broader question is better than parameterising a narrow
+  # one. The selector walks whatever comes back.
+  - run: info from state /network-instance * protocols bgp neighbor * | as json
+
+    select: network-instance[*].protocols.bgp.neighbor[*]
+
+    fields:
+      identity: peer-router-id
+      address:  peer-address
+      as:       peer-as
+      state:    session-state

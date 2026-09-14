@@ -1,0 +1,22 @@
+# EOS names itself on the first line, which is the same test netmiko's own
+# autodetect uses. `vendor` because it must be tried before the os and generic
+# tiers: an EOS box is not a Linux host, whatever uname would say.
+#
+# Nobody has run this against a device, which is why it declares no
+# `verified:`.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_version/arista_eos_show_version.raw
+#   match:  exact
+
+id:        arista_eos
+tier:      vendor
+transport: ssh
+command:   show version
+
+is:
+  - {field: 1, equals: Arista}
+
+family:  arista_eos

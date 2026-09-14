@@ -1,0 +1,291 @@
+# Publishes a release from a pushed v* tag: gates, a signed tarball, and an
+# immutable GitHub release.
+#
+# Order matters, and every step fails closed:
+#   1. the tag contract (docs/VERSIONING.md), before anything is chosen or built
+#   2. dispelnet checks and provenance on the tagged tree
+#   3. the compatibility check and the minimum bump
+#   4. tarball, checksums, signature, and verification of that signature
+#   5. draft -> upload -> check assets -> publish -> gh release verify
+#
+# Nothing is created on GitHub until step 5, so a failure before then leaves no
+# trace. Immutable releases forbid adding assets after publishing, which is why
+# the draft is filled and checked first.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+# A tag is pushed once, so this only collides with a deliberate re-run, and a
+# half-finished release must not be cancelled by whoever is retrying it.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # Holds DISPEL_READ_TOKEN. Only someone with write access can push a tag,
+    # so no approval is required.
+    environment: release
+
+    permissions:
+      contents: write # create the release and upload to it
+      id-token: write # keyless signing: the certificate names this workflow
+
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      # Full history: the base is an earlier tag, and the tag must be on main.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # A tag fetched as a side effect of checkout can lose its annotation.
+      # Fetched explicitly, it cannot, and main is needed for the ancestry check.
+      - name: Fetch the tag and main
+        run: git fetch --force origin "+refs/tags/${TAG}:refs/tags/${TAG}" "+refs/heads/main:refs/remotes/origin/main"
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: tools/go.mod
+          cache-dependency-path: tools/go.sum
+
+      - name: List published releases
+        run: |
+          gh release list -R "$GITHUB_REPOSITORY" --limit 1000 --exclude-drafts \
+            --json tagName --jq '.[].tagName' > "$RUNNER_TEMP/releases"
+
+      # --- 1. Tag contract -------------------------------------------------
+
+      - name: Tag contract
+        id: contract
+        run: |
+          go -C tools run ./cmd/bump --tag "$TAG" --main origin/main \
+            --releases "$RUNNER_TEMP/releases" --contract-only \
+            --github-output "$GITHUB_OUTPUT"
+
+      # --- 2. dispelnet checks and provenance -----------------------------
+
+      - name: Read checker pins
+        id: pins
+        env:
+          BASE: ${{ steps.contract.outputs.base }}
+        run: |
+          valid() { [[ $1 =~ ^([0-9a-f]{40}|v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?)$ ]]; }
+
+          head_pin="$(tr -d '[:space:]' < .dispelnet-version)"
+          valid "$head_pin" || { echo "::error::.dispelnet-version at $TAG is not a SHA or tag: '$head_pin'"; exit 1; }
+          echo "head=$head_pin" >> "$GITHUB_OUTPUT"
+
+          if [[ -n $BASE ]]; then
+            base_pin="$(git show "refs/tags/${BASE}:.dispelnet-version" | tr -d '[:space:]')"
+            valid "$base_pin" || { echo "::error::.dispelnet-version at $BASE is not a SHA or tag: '$base_pin'"; exit 1; }
+            echo "base=$base_pin" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Require the dispel token
+        env:
+          TOKEN: ${{ secrets.DISPEL_READ_TOKEN }}
+        run: |
+          if [[ -z $TOKEN ]]; then
+            echo "::error::DISPEL_READ_TOKEN is not set in the release environment"
+            exit 1
+          fi
+
+      - name: Check out dispel at the tag's pin
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: dispelnet/dispel
+          ref: ${{ steps.pins.outputs.head }}
+          token: ${{ secrets.DISPEL_READ_TOKEN }}
+          path: dispel
+          persist-credentials: false
+
+      - name: Check out dispel at the base's pin
+        if: steps.pins.outputs.base != ''
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: dispelnet/dispel
+          ref: ${{ steps.pins.outputs.base }}
+          token: ${{ secrets.DISPEL_READ_TOKEN }}
+          path: dispel-base
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: dispel/go.mod
+          cache-dependency-path: dispel/go.sum
+
+      - name: Build the checkers
+        env:
+          HAS_BASE: ${{ steps.pins.outputs.base != '' }}
+        run: |
+          bash .github/scripts/build-checker.sh dispel "$RUNNER_TEMP/dispelnet"
+
+          if [[ $HAS_BASE == true ]]; then
+            bash .github/scripts/build-checker.sh dispel-base "$RUNNER_TEMP/dispelnet-base"
+          fi
+
+      - name: Collect recipe data
+        run: bash .github/scripts/collect-tree.sh . "$RUNNER_TEMP/tree"
+
+      - name: Verify recipes and probes
+        run: '"$RUNNER_TEMP/dispelnet" recipes verify --from "$RUNNER_TEMP/tree"'
+
+      - name: Corpus tests
+        run: bash .github/scripts/corpus-tests.sh dispel "$RUNNER_TEMP/tree"
+
+      - name: Check provenance against upstream
+        run: go -C tools run ./cmd/provenance ..
+
+      # --- 3. Compatibility and bump -----------------------------------------
+
+      # "Backwards compatible" is tested, not judged: if the checker a client
+      # of the base release was built against refuses this tree, it is major.
+      - name: Compatibility with the base release's checker
+        id: compat
+        env:
+          HAS_BASE: ${{ steps.pins.outputs.base != '' }}
+        run: |
+          incompatible=false
+
+          if [[ $HAS_BASE == true ]] && ! "$RUNNER_TEMP/dispelnet-base" recipes verify --from "$RUNNER_TEMP/tree"; then
+            echo "::warning::the checker pinned at the base release refuses this tree, so this release must be major"
+            incompatible=true
+          fi
+
+          echo "incompatible=$incompatible" >> "$GITHUB_OUTPUT"
+
+      - name: Minimum bump
+        id: bump
+        env:
+          INCOMPATIBLE: ${{ steps.compat.outputs.incompatible }}
+        run: |
+          go -C tools run ./cmd/bump --tag "$TAG" --main origin/main \
+            --releases "$RUNNER_TEMP/releases" \
+            --incompatible="$INCOMPATIBLE" \
+            --notes "$RUNNER_TEMP/notes.md" \
+            --summary "$GITHUB_STEP_SUMMARY" \
+            --github-output "$GITHUB_OUTPUT"
+
+      # --- 4. Build and sign ---------------------------------------------------
+
+      - name: Build the tarball
+        id: tarball
+        run: |
+          version="${TAG#v}"
+          name="recipes-${version}"
+          commit="refs/tags/${TAG}^{commit}"
+
+          mapfile -t allowed < <(git ls-tree -d --name-only "$commit:recipes")
+          allowed+=(LICENSE NOTICE)
+
+          mkdir -p dist
+          git archive --format=tar --prefix="${name}/" "$commit:recipes" > "dist/${name}.tar"
+          git archive --format=tar --prefix="${name}/" "$commit" -- LICENSE NOTICE > "dist/legal.tar"
+          tar --concatenate --file="dist/${name}.tar" dist/legal.tar
+          gzip -n < "dist/${name}.tar" > "dist/${name}.tar.gz"
+          rm dist/${name}.tar dist/legal.tar
+
+          # One top-level directory, because dispelnet strips the first path
+          # segment of every entry; and inside it, nothing unexpected.
+          unexpected="$(tar -tzf "dist/${name}.tar.gz" | awk -F/ -v prefix="$name" '
+            $1 != prefix { print "outside the prefix: " $0; next }
+            NF > 1 && $2 != "" { print $2 }' | sort -u | grep -vxF -f <(printf '%s\n' "${allowed[@]}") || true)"
+
+          if [[ -n $unexpected ]]; then
+            echo "::error::unexpected tarball entries: $unexpected"
+            exit 1
+          fi
+
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          tar -tzf "dist/${name}.tar.gz" | head -n 20
+
+      - name: Checksums
+        env:
+          NAME: ${{ steps.tarball.outputs.name }}
+        run: cd dist && sha256sum "${NAME}.tar.gz" > SHA256SUMS && cat SHA256SUMS
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          cosign-release: v3.1.3
+
+      # No key exists anywhere: the certificate is issued for this workflow run
+      # from its OIDC token. A missing id-token permission fails here, not later
+      # as an unsigned release.
+      - name: Sign
+        run: cosign sign-blob --yes --bundle dist/SHA256SUMS.sigstore.json dist/SHA256SUMS
+
+      # The same check a user runs, pinned to this tag's exact identity rather
+      # than the README's pattern.
+      - name: Verify the signature
+        env:
+          NAME: ${{ steps.tarball.outputs.name }}
+        run: |
+          cosign verify-blob dist/SHA256SUMS \
+            --bundle dist/SHA256SUMS.sigstore.json \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            --certificate-identity "https://github.com/${GITHUB_REPOSITORY}/.github/workflows/release.yml@${GITHUB_REF}"
+
+          (cd dist && sha256sum -c SHA256SUMS)
+
+          for file in "${NAME}.tar.gz" SHA256SUMS SHA256SUMS.sigstore.json; do
+            [[ -s dist/$file ]] || { echo "::error::dist/$file is missing or empty"; exit 1; }
+          done
+
+      # --- 5. Publish ----------------------------------------------------------
+
+      # Drafts are handled by release id: GitHub's by-tag lookup does not return
+      # them.
+      - name: Publish
+        env:
+          NAME: ${{ steps.tarball.outputs.name }}
+          PRERELEASE: ${{ steps.contract.outputs.prerelease }}
+          LATEST: ${{ steps.contract.outputs.latest }}
+        run: |
+          releases="repos/${GITHUB_REPOSITORY}/releases"
+          existing="$(gh api "$releases" --paginate --jq ".[] | select(.tag_name == env.TAG) | \"\(.id) \(.draft)\"")"
+
+          while read -r id draft; do
+            [[ -z ${id:-} ]] && continue
+            if [[ $draft == false ]]; then
+              echo "::error::$TAG is already published; an immutable release cannot be replaced. Cut a new version."
+              exit 1
+            fi
+            echo "deleting the draft left by an earlier run (release $id)"
+            gh api -X DELETE "$releases/$id"
+          done <<< "$existing"
+
+          flags=(--verify-tag --draft --title "$TAG" --notes-file "$RUNNER_TEMP/notes.md")
+          [[ $PRERELEASE == true ]] && flags+=(--prerelease)
+
+          gh release create "$TAG" "${flags[@]}" \
+            "dist/${NAME}.tar.gz" dist/SHA256SUMS dist/SHA256SUMS.sigstore.json
+
+          id="$(gh api "$releases" --paginate --jq ".[] | select(.tag_name == env.TAG and .draft) | .id")"
+          [[ $id =~ ^[0-9]+$ ]] || { echo "::error::expected exactly one draft for $TAG, found '$id'"; exit 1; }
+
+          want="$(cd dist && for f in "${NAME}.tar.gz" SHA256SUMS SHA256SUMS.sigstore.json; do echo "$f $(stat -c %s "$f")"; done | sort)"
+          got="$(gh api "$releases/$id/assets" --paginate --jq '.[] | "\(.name) \(.size)"' | sort)"
+
+          if [[ $want != "$got" ]]; then
+            echo "::error::draft assets do not match what was built"
+            diff <(echo "$want") <(echo "$got") || true
+            exit 1
+          fi
+
+          gh api -X PATCH "$releases/$id" -F draft=false -f make_latest="$LATEST" > /dev/null
+
+          # Proves the published release is immutable. If this fails, release
+          # immutability was not enabled in the repository settings.
+          gh release verify "$TAG" -R "$GITHUB_REPOSITORY"

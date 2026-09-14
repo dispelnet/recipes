@@ -1,0 +1,16 @@
+# Which release this device is running.
+
+family:   linux
+question: version
+applies:  ["*"]
+verified: linux 7.0.0-31-generic
+
+steps:
+  - run: uname -sr
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^Linux\s+${VERSION} -> Record
+    fields:
+      version: VERSION

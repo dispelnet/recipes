@@ -1,0 +1,25 @@
+# `ip -j neigh` covers ARP and IPv6 neighbours alike, so one command answers for
+# both families.
+#
+# The state is read but not judged: a recipe may not decide anything, so whether
+# an entry the device itself failed to resolve is worth following is a decision
+# for whoever asked the question.
+#
+# addresses.captured beside this file is what the device answered.
+
+family:   linux
+question: addresses
+applies:  ["*"]
+verified: linux 7.0.0-30-generic
+
+command: ip -j neigh
+select:  "[*]"
+fields:
+  address: dst
+  state:   state[*]
+
+  # Which interface the neighbour was seen on. A device resolves addresses on
+  # every interface it has, including the one it is managed through, and those
+  # are not the same kind of fact: one is a device on a shared segment, the
+  # other may be what is on the end of a cable.
+  port:    dev

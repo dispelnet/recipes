@@ -1,0 +1,16 @@
+# Which release this device is running.
+
+family:   nokia_srlinux
+question: version
+applies:  ["*"]
+verified: nokia_srlinux 24.10.1
+
+steps:
+  - run: info from state /system information | as json
+    template: |
+      Value VERSION ([0-9][0-9.]*)
+
+      Start
+        ^\s+"version":\s+"v${VERSION} -> Record
+    fields:
+      version: VERSION

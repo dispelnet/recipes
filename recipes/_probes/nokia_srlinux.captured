@@ -1,0 +1,12 @@
+{
+  "system": {
+    "information": {
+      "contact": "netops@dispelnet.example",
+      "location": "gauntlet fabric, rack 1 position 1",
+      "description": "SRLinux-v24.10.1-492-gf8858c5836 7220 IXR-D2L Copyright (c) 2000-2020 Nokia. Kernel 7.0.0-31-generic #31~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon Aug 10 09:38:02 UTC 2",
+      "current-datetime": "2026-09-10T09:21:25.791Z (now)",
+      "last-booted": "2026-09-10T09:20:27.773Z (58 seconds ago)",
+      "version": "v24.10.1-492-gf8858c5836"
+    }
+  }
+}

@@ -1,0 +1,146 @@
+# Checks that run a pull request's own code, and so hold no secrets.
+#
+# This runs straight away for every pull request, forks included. The checks
+# that need the private dispel repository are in checker.yml, which never runs
+# pull request code.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  provenance:
+    name: Provenance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: tools/go.mod
+          cache-dependency-path: tools/go.sum
+
+      # Content at a full commit never changes, so fetched upstream files are
+      # kept across runs; the key only has to change when a capture block does.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/dispelnet-recipes/upstream
+          key: upstream-${{ hashFiles('recipes/*/*.yaml', 'tools/upstreams.yml') }}
+          restore-keys: upstream-
+
+      - name: Check provenance against upstream
+        run: go -C tools run ./cmd/provenance --cache ~/.cache/dispelnet-recipes/upstream ..
+
+  tools:
+    name: Tools
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: tools/go.mod
+          cache-dependency-path: tools/go.sum
+
+      # checker.yml hands a token to its actions and release.yml can publish and
+      # sign with them, so a tag someone could move is not a reference they may
+      # use. Dependabot proposes new SHAs; this keeps a hand edit from undoing
+      # that.
+      - name: Actions are pinned to commit SHAs
+        run: |
+          unpinned="$(grep -nE '^[[:space:]]*(-[[:space:]]+)?uses:' .github/workflows/*.yml \
+            | grep -vE 'uses:[[:space:]]+[^@[:space:]]+@[0-9a-f]{40}([[:space:]]|$)' || true)"
+
+          if [[ -n $unpinned ]]; then
+            echo "::error::every action must be pinned to a full commit SHA, with its version in a comment"
+            echo "$unpinned"
+            exit 1
+          fi
+
+      # The same linters and formatters as dispel, at the same version, with
+      # tools/.golangci.yml.
+      - name: Format
+        run: go -C tools run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2 fmt --diff
+
+      - name: Lint
+        run: go -C tools run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.13.2 run
+
+      - name: Test
+        run: go -C tools test -race ./...
+
+      - name: Tidy
+        run: |
+          go -C tools mod tidy
+          git diff --exit-code -- tools/go.mod tools/go.sum
+
+  bump:
+    name: Version bump
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      pull-requests: write # the sticky comment; a fork's token stays read-only
+
+    steps:
+      # Full history and tags: the base is a release tag, and its tree is read
+      # from git.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: tools/go.mod
+          cache-dependency-path: tools/go.sum
+
+      # A tag whose release failed is not a base, and only GitHub knows which
+      # those are.
+      - name: List published releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release list -R "$GITHUB_REPOSITORY" --limit 1000 --exclude-drafts \
+            --json tagName --jq '.[].tagName' > "$RUNNER_TEMP/releases"
+
+      - name: Work out the minimum bump
+        run: |
+          go -C tools run ./cmd/bump \
+            --releases "$RUNNER_TEMP/releases" \
+            --summary "$GITHUB_STEP_SUMMARY" \
+            --comment "$RUNNER_TEMP/comment.md"
+
+      - name: Comment on the pull request
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          marker='<!-- dispelnet-recipes-bump -->'
+          existing="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id" | head -n 1)"
+
+          if [[ -n $existing ]]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$existing" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          else
+            gh pr comment "$PR" -R "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/comment.md"
+          fi

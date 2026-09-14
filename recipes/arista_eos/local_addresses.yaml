@@ -1,0 +1,26 @@
+# The addresses this device holds itself.
+#
+# Interfaces with no address print the literal word `unassigned`. The ADDRESS
+# value only matches an address, so those lines match no rule and record
+# nothing -- which is how TextFSM says "skip this" without a conditional.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_ip_interface_brief/arista_eos_show_ip_interface_brief.raw
+#   match:  exact
+
+family:   arista_eos
+question: local-addresses
+applies:  ["*"]
+
+steps:
+  - run: show ip interface brief
+    template: |
+      Value INTERFACE (\S+)
+      Value ADDRESS (\d+\.\d+\.\d+\.\d+)
+
+      Start
+        ^${INTERFACE}\s+${ADDRESS}/\d+\s+ -> Record
+    fields:
+      identity: ADDRESS

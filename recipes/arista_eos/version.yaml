@@ -1,0 +1,21 @@
+# Which release this device is running.
+#
+# Capture:
+#   source: networktocode/ntc-templates
+#   commit: c6dca50ea10fe5a23e750748582fddda263fb053
+#   file:   tests/arista_eos/show_version/arista_eos_show_version.raw
+#   match:  exact
+
+family:   arista_eos
+question: version
+applies:  ["*"]
+
+steps:
+  - run: show version
+    template: |
+      Value VERSION (\S+)
+
+      Start
+        ^Software image version:\s+${VERSION} -> Record
+    fields:
+      version: VERSION

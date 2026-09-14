@@ -1,0 +1,21 @@
+# What a device calls itself, which is what tells a crawl that two addresses
+# are one device.
+#
+# `hostname` answers one bare word. The short form has no place for a
+# template, so this is written as a step: one value, recorded from the only
+# line, which is the smallest TextFSM template that can exist.
+
+family:   frr
+question: hostname
+applies:  ["*"]
+verified: frr 10.3.4
+
+steps:
+  - run: hostname
+    template: |
+      Value NAME (\S+)
+
+      Start
+        ^${NAME} -> Record
+    fields:
+      hostname: NAME
